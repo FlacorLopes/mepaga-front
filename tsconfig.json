@@ -1,6 +1,27 @@
 {
-  "extends": "@quasar/app/tsconfig-preset",
   "compilerOptions": {
-    "baseUrl": "."
-  }
+    "allowJs": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "noEmit": false,
+    "noImplicitThis": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "target": "es6",
+    "paths": {
+      "src/*": ["src/*"],
+      "app/*": ["*"],
+      "components/*": ["src/components/*"],
+      "layouts/*": ["src/layouts/*"],
+      "pages/*": ["src/pages/*"],
+      "assets/*": ["src/assets/*"],
+      "boot/*": ["src/boot/*"]
+    }
+  },
+  // Needed to avoid files copied into 'dist' folder (eg. a `.d.ts` file inside `src-ssr` folder)
+  // to be evaluated by TS when their original files has been updated
+  "exclude": ["/dist", ".quasar", "node_modules"]
 }
