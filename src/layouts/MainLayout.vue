@@ -3,17 +3,27 @@
     <q-header
       reveal
       elevated
-      class="text-white mp-header mp-ubuntu q-px-xl q-py-xs"
+      class="text-white mp-header mp-ubuntu q-px-sm-sm q-px-md-xl q-py-xs"
     >
       <q-toolbar>
         <q-toolbar-title class="mp-logo-title"> Bora Dividir </q-toolbar-title>
 
         <div class="row q-gutter-md">
-          <q-avatar color="primary" text-color="white" v-if="auth.isLoggedIn">{{
-            auth.user.username.charAt(0)
-          }}</q-avatar>
+          <q-avatar
+            color="bd-white-0"
+            text-color="primary"
+            v-if="auth.isLoggedIn"
+            >{{ auth.user.username.charAt(0) }}</q-avatar
+          >
 
-          <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
+          <q-btn
+            dense
+            flat
+            round
+            icon="menu"
+            @click="toggleRightDrawer"
+            color="positive"
+          />
         </div>
       </q-toolbar>
     </q-header>
@@ -52,10 +62,16 @@
           </q-item-section>
           <q-item-section> Sair </q-item-section>
         </q-item>
+        <q-item clickable to="minhas-faturas">
+          <q-item-section avatar>
+            <q-icon name="credit_card" color="primary" />
+          </q-item-section>
+          <q-item-section> Minhas faturas </q-item-section>
+        </q-item>
       </div>
     </q-drawer>
 
-    <q-page-container class="q-px-xl">
+    <q-page-container class="q-px-sm-sm q-px-md-xl">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -64,16 +80,19 @@
 <script lang="ts">
 import { ref, reactive, computed } from 'vue';
 import { useStore } from 'src/store';
+import { useRouter } from 'vue-router';
 
 export default {
   setup() {
     const store = useStore();
-    const rightDrawerOpen = ref(true);
+    const router = useRouter();
     const formLogin = reactive({
       email: '',
       password: '',
     });
     const auth = computed(() => store.state?.authentication);
+    const rightDrawerOpen = ref(!auth.value.isLoggedIn ? true : false);
+
     const toggleRightDrawer = () => {
       rightDrawerOpen.value = !rightDrawerOpen.value;
     };
@@ -87,6 +106,7 @@ export default {
 
     const logout = async () => {
       await store.dispatch('authentication/logout');
+      await router.push('/');
     };
 
     return {

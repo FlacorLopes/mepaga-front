@@ -1,5 +1,20 @@
 <template>
-  <q-page class="row items-center justify-evenly"> </q-page>
+  <div class="q-pt-xl q-px-md q-gutter-y-xl mp-ubuntu">
+    <div class="q-gutter-md">
+      <div class="text-h4 text-weight-bold text-primary">Bem Vindx</div>
+      <div style="max-width: 450px">
+        O MePaga te ajuda a organizar a fatura do seu cartão. Para começar,
+        importe uma fatura.
+      </div>
+    </div>
+    <q-uploader
+      url="http://localhost:3000/upload"
+      color="positive"
+      style="width: 100%; height: 100%"
+      class="bd-uploader"
+      flat
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -38,3 +53,11 @@ export default defineComponent({
   },
 });
 </script>
+<style lang="scss" scoped>
+.bd-uploader {
+  border: 2px dashed $mepaga-blue-2;
+  border-radius: 10px;
+
+  min-height: 330px;
+}
+</style>

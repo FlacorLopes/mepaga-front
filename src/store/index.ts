@@ -7,6 +7,8 @@ import {
 } from 'vuex';
 import authenticationModule from './auth';
 import { AuthStateInterface } from './auth/state';
+import invoicesModule from './app';
+import { AppStateInterface } from './app/state';
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -25,6 +27,7 @@ export interface StateInterface {
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   authentication: AuthStateInterface;
+  invoices: AppStateInterface;
 }
 
 // provide typings for `this.$store`
@@ -42,6 +45,7 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
       authentication: authenticationModule,
+      invoices: invoicesModule,
     },
 
     // enable strict mode (adds overhead!)

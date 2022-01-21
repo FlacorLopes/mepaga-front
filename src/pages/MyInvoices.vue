@@ -1,0 +1,50 @@
+<template>
+  <div class="q-pa-md">
+    <q-table
+      title="Minhas Faturas"
+      :rows="invoices.invoices"
+      :columns="columns"
+      row-key="uid"
+      :loading="invoices.loading"
+      grid
+    />
+  </div>
+</template>
+
+<script lang="ts">
+import { useStore } from 'src/store';
+import { computed } from 'vue';
+
+import { ResponseObject } from 'src/services/StrapiResponseWrapper';
+import { IInvoice } from 'src/services/app/dto/InvoiceDTO';
+
+const columns = [
+  {
+    name: 'date',
+    label: 'Data',
+    field: (row: ResponseObject<IInvoice>) => row.attributes.dueDate,
+    align: 'left',
+  },
+  {
+    name: 'total',
+    label: 'Valor',
+    field: (row: ResponseObject<IInvoice>) => row.attributes.total,
+
+    align: 'left',
+  },
+];
+export default {
+  name: 'MyInvoices',
+  setup() {
+    const store = useStore();
+    const invoices = computed(() => store.state.invoices);
+
+    store.dispatch('invoices/load').catch((reason) => alert(reason));
+
+    return {
+      invoices,
+      columns,
+    };
+  },
+};
+</script>

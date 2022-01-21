@@ -12,15 +12,17 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
-$primary: #1976d2;
-$secondary: #26a69a;
-$accent: #9c27b0;
+// src/css/quasar.variables.scss
 
-$dark: #1d1d1d;
+$primary: #0b3954;
+$secondary: #3891a6;
+$accent: #e0ff4f;
 
-$positive: #21ba45;
-$negative: #c10015;
-$info: #31ccec;
+$dark: #061924;
+
+$positive: #bfe11e;
+$negative: #eb3e3b;
+$info: #10a7cb;
 $warning: #f2c037;
 
 $mepaga-blue-0: #061924;
@@ -32,3 +34,10 @@ $mepaga-white-0: #f5f5f5;
 $mepaga-green-0: #bfe11e;
 $mepaga-green-1: #e0ff4f;
 $mepaga-green-2: #ecfe97;
+
+.text-bd-white-0 {
+  color: $mepaga-white-0 !important;
+}
+.bg-bd-white-0 {
+  background: $mepaga-white-0 !important;
+}
