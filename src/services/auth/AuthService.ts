@@ -19,13 +19,13 @@ export class AuthService implements IAuthService {
 
     if (response.status !== 200) throw new Error(response.statusText);
 
-    (this.api.defaults.headers as { Authorization: any })['Authorization'] =
+    (this.api.defaults.headers as { Authorization: string })['Authorization'] =
       'Bearer ' + (response.data as AuthResponseDTO).jwt;
     return response.data as AuthResponseDTO;
   }
 
   logout() {
-    (this.api.defaults.headers as { Authorization: any })['Authorization'] =
+    (this.api.defaults.headers as { Authorization: string })['Authorization'] =
       null;
   }
 }

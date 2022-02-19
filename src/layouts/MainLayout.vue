@@ -6,11 +6,11 @@
       class="text-white mp-header mp-ubuntu q-px-sm-sm q-px-md-xl q-py-xs"
     >
       <q-toolbar>
-        <q-toolbar-title class="mp-logo-title"> Bora Dividir </q-toolbar-title>
+        <q-toolbar-title class="mp-logo-title">MePaga</q-toolbar-title>
 
         <div class="row q-gutter-md">
           <q-avatar
-            color="bd-white-0"
+            color="mp-white-0"
             text-color="primary"
             v-if="auth.isLoggedIn"
             >{{ auth.user.username.charAt(0) }}</q-avatar
@@ -56,17 +56,17 @@
         />
       </div>
       <div class="q-pa-md q-gutter-sm" v-else>
+        <q-item clickable :to="{ name: 'MyInvoices' }">
+          <q-item-section avatar>
+            <q-icon name="credit_card" color="primary" />
+          </q-item-section>
+          <q-item-section> Minhas faturas </q-item-section>
+        </q-item>
         <q-item clickable @click="logout">
           <q-item-section avatar>
             <q-icon name="logout" color="primary" />
           </q-item-section>
           <q-item-section> Sair </q-item-section>
-        </q-item>
-        <q-item clickable to="minhas-faturas">
-          <q-item-section avatar>
-            <q-icon name="credit_card" color="primary" />
-          </q-item-section>
-          <q-item-section> Minhas faturas </q-item-section>
         </q-item>
       </div>
     </q-drawer>

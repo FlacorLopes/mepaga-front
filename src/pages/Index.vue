@@ -8,48 +8,45 @@
       </div>
     </div>
     <q-uploader
-      url="http://localhost:3000/upload"
+      :url="`http://localhost:1337/api/invoices/upload?bank=${'nubank'}`"
       color="positive"
       style="width: 100%; height: 100%"
       class="bd-uploader"
+      accept="application/pdf"
+      method="POST"
+      :headers="[
+        { name: 'Authorization', value: `Bearer ${auth.token?.access_token}` },
+      ]"
+      @uploaded="onUploadFinish"
       flat
     />
   </div>
 </template>
 
 <script lang="ts">
-import { Todo, Meta } from 'components/models';
-import { defineComponent, ref } from 'vue';
+import { IInvoice } from 'src/services/app/dto/InvoiceDTO';
+import { useStore } from 'src/store';
+import { defineComponent, computed } from 'vue';
+import { useRouter } from 'vue-router';
 
+interface QUploadInfo {
+  xhr: {
+    response: string;
+  };
+}
 export default defineComponent({
   name: 'PageIndex',
   setup() {
-    const todos = ref<Todo[]>([
-      {
-        id: 1,
-        content: 'ct1',
-      },
-      {
-        id: 2,
-        content: 'ct2',
-      },
-      {
-        id: 3,
-        content: 'ct3',
-      },
-      {
-        id: 4,
-        content: 'ct4',
-      },
-      {
-        id: 5,
-        content: 'ct5',
-      },
-    ]);
-    const meta = ref<Meta>({
-      totalCount: 1200,
-    });
-    return { todos, meta };
+    const store = useStore();
+    const auth = computed(() => store.state?.authentication);
+    const router = useRouter();
+
+    const onUploadFinish = async (info: QUploadInfo) => {
+      const invoice = JSON.parse(info.xhr.response) as IInvoice;
+      await router.push(`/fatura/${invoice.id}`);
+    };
+
+    return { auth, onUploadFinish };
   },
 });
 </script>

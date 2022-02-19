@@ -11,6 +11,21 @@ const routes: RouteRecordRaw[] = [
         path: 'minhas-faturas',
         component: () => import('pages/MyInvoices.vue'),
       },
+      {
+        name: 'InvoiceViewer',
+        path: '/fatura/:id',
+        component: () => import('pages/InvoiceViewer.vue'),
+      },
+    ],
+  },
+  {
+    path: '/connect',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: 'google/redirect',
+        component: () => import('pages/auth/Google.vue'),
+      },
     ],
   },
 

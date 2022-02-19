@@ -10,7 +10,6 @@ const actions: ActionTree<AuthStateInterface, StateInterface> = {
   async login({ commit }, params: AuthRequestDTO) {
     commit('setLoading', true);
     const data = await authService.login(params);
-    console.log(data);
     commit('setLoggedIn', data);
     commit('setLoading', false);
   },

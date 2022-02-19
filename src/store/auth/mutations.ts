@@ -10,6 +10,11 @@ const mutation: MutationTree<AuthStateInterface> = {
       email: payload.user.email,
       username: payload.user.username,
     };
+    state.token = {
+      access_token: payload.jwt,
+    };
+
+    console.log('state set', state);
   },
   setLoggedOut(state: AuthStateInterface) {
     state.isLoggedIn = false;

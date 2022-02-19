@@ -4,6 +4,9 @@ export interface AuthStateInterface {
   loading: boolean;
   isLoggedIn: boolean;
   user?: Pick<User, 'username' | 'email'>;
+  token?: {
+    access_token: string;
+  };
 }
 
 function state(): AuthStateInterface {
@@ -11,6 +14,7 @@ function state(): AuthStateInterface {
     loading: false,
     isLoggedIn: false,
     user: null,
+    token: null,
   };
 }
 

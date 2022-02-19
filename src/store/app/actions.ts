@@ -10,6 +10,13 @@ const actions: ActionTree<AppStateInterface, StateInterface> = {
     const invoices = await invoiceService.getInvoices();
     commit('setInvoices', invoices);
   },
+
+  async loadInvoice({ commit }, id: string) {
+    commit('setLoading', true);
+    const invoice = await invoiceService.getInvoice(id);
+    console.log('loaded invoice', invoice);
+    commit('setCurrentInvoice', invoice);
+  },
 };
 
 export default actions;

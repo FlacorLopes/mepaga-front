@@ -7,7 +7,10 @@ const mutation: MutationTree<AppStateInterface> = {
     state.loading = false;
     state.invoices = invoices;
   },
-
+  setCurrentInvoice(state: AppStateInterface, invoice: IInvoice) {
+    state.loading = false;
+    state.currentInvoice = invoice;
+  },
   setLoading(state: AppStateInterface, loading: boolean) {
     state.loading = loading;
   },
