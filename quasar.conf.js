@@ -142,8 +142,8 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: 'Bora Dividir',
-        short_name: 'Bora Dividir',
+        name: 'MePaga',
+        short_name: 'MePaga',
         description: 'Organize a fatura de seus cartões',
         display: 'standalone',
         orientation: 'portrait',

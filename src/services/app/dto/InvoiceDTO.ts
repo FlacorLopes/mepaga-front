@@ -27,6 +27,7 @@ export interface IPurchase {
 
 export interface IPurchaser {
   name: string;
+  representsUser: boolean;
 }
 
 /*

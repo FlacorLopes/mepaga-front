@@ -2,7 +2,7 @@
   "name": "bora-dividir-frontend",
   "version": "0.0.1",
   "description": "Organize a fatura de seus cartões",
-  "productName": "Bora Dividir",
+  "productName": "MePaga",
   "author": "Flávio Lopes <flavioloppes@outlook.com>",
   "private": true,
   "scripts": {

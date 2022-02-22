@@ -49,7 +49,9 @@
                     icon="account_circle"
                     style="width: 120px; max-width: 120px"
                   >
-                    Ruana Silva
+                    <q-space />
+                    {{ getPurchaseOwner(p.attributes).name.toUpperCase() }}
+                    <q-space />
                   </q-chip>
                   <q-icon
                     name="more_horiz"
@@ -117,7 +119,11 @@
         </q-card-section>
         <q-card-section class="q-gutter-y-md">
           <div class="row q-gutter-x-md">
-            <purchaser-card useUserStyle :value="400" :purchaseAmount="2" />
+            <purchaser-card
+              useUserStyle
+              :value="userPurchasesValue"
+              :purchaseAmount="userPurchases.length"
+            />
             <add-purchaser-card />
           </div>
           <div class="row q-gutter-x-md"></div>
@@ -135,15 +141,26 @@ import LoadingTableSkeleton from 'src/components/LoadingTableSkeleton.vue';
 import { date } from 'quasar';
 import PurchaserCard from 'src/components/PurchaserCard.vue';
 import AddPurchaserCard from 'src/components/AddPurchaserCard.vue';
+import { getPurchaseOwner } from 'src/utils/InvoiceUtils';
+
 export default defineComponent({
   components: { LoadingTableSkeleton, PurchaserCard, AddPurchaserCard },
-  // name: 'PageName'
+  name: 'InvoiceViewer',
   setup() {
     const store = useStore();
     const router = useRouter();
     const invoiceId = computed(() => router.currentRoute.value.params.id);
     const currentInvoice = computed(() => store.state.invoices?.currentInvoice);
-    const purchasesList = computed(() => currentInvoice.value?.purchases.data);
+    const purchasesList = currentInvoice.value?.purchases.data;
+
+    const userPurchases = purchasesList.filter((p) =>
+      p.attributes.purchasers.data.some(
+        (purchaser) => purchaser.attributes.representsUser
+      )
+    );
+    const userPurchasesValue = userPurchases
+      .map((p) => p.attributes.price)
+      .reduce((a, b) => a + b);
 
     const dueDate = computed(() => {
       if (currentInvoice.value.dueDate) {
@@ -178,6 +195,9 @@ export default defineComponent({
       invoiceId,
       dueDate,
       purchasesList,
+      userPurchases,
+      userPurchasesValue,
+      getPurchaseOwner,
     };
   },
 });
