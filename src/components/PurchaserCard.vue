@@ -1,5 +1,12 @@
 <template>
-  <q-card class="q-pa-md col" style="max-width: 220px">
+  <q-card class="q-pa-md col" style="min-width: 200px; max-width: 220px">
+    <q-spinner
+      color="primary"
+      size="md"
+      class="absolute-center"
+      v-if="loading"
+    />
+
     <div class="row q-gutter-x-lg no-wrap">
       <div class="column q-gutter-y-xs">
         <q-avatar color="mp-lightblue-1" size="md">
@@ -17,6 +24,14 @@
       </div>
 
       <div class="column q-gutter-y-none">
+        <q-badge
+          color="positive"
+          class="q-mt-sm q-mr-sm"
+          :label="badgeNumber"
+          floating
+          rounded
+          v-show="badgeNumber >= 1"
+        />
         <div class="text-subtitle1 text-mp-red-0 text-weight-medium">
           R$ {{ value }}
         </div>
@@ -41,10 +56,18 @@ export default defineComponent({
       type: String,
     },
     value: {
-      type: Number,
+      type: String,
     },
     purchaseAmount: {
       type: Number,
+    },
+    badgeNumber: {
+      type: Number,
+      default: 0,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
   },
   // setup() {

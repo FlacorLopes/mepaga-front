@@ -6,6 +6,7 @@ export interface AuthRequestDTO {
 export interface User {
   id: number;
   username: string;
+  displayName: string;
   email: string;
   provider: string;
   confirmed: boolean;

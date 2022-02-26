@@ -1,4 +1,4 @@
-import { IInvoice } from 'src/services/app/dto/InvoiceDTO';
+import { IInvoice, IPurchaser } from 'src/services/app/dto/InvoiceDTO';
 import { MutationTree } from 'vuex';
 import { AppStateInterface } from './state';
 
@@ -13,6 +13,12 @@ const mutation: MutationTree<AppStateInterface> = {
   },
   setLoading(state: AppStateInterface, loading: boolean) {
     state.loading = loading;
+  },
+  setPurchasers(state: AppStateInterface, purchasers: IPurchaser[]) {
+    state.purchasers = purchasers;
+  },
+  setUserPurchasersList(state: AppStateInterface, list: IPurchaser[]) {
+    state.userPurchaserList = list;
   },
 };
 

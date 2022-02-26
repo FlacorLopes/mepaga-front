@@ -102,6 +102,8 @@ export default {
         identifier: formLogin.email,
         password: formLogin.password,
       });
+      rightDrawerOpen.value = false;
+      await router.push({ name: 'MyInvoices' });
     };
 
     const logout = async () => {
