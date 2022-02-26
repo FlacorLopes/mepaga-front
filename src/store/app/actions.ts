@@ -14,7 +14,6 @@ const actions: ActionTree<AppStateInterface, StateInterface> = {
   async load({ commit }) {
     commit('setLoading', true);
     const invoices = await invoiceService.getInvoices();
-    console.log('load invoices', invoices);
     commit('setInvoices', invoices);
   },
 
@@ -38,14 +37,12 @@ const actions: ActionTree<AppStateInterface, StateInterface> = {
           purchasersFound.push({ ...purchaser.attributes, id: purchaser.id });
       });
     });
-    console.log('loaded invoice', invoice);
     commit('setCurrentInvoice', invoice);
     commit('setPurchasers', purchasersFound);
   },
 
   async addPurchaser({ commit, state }, name: string) {
     const purchaser = await invoiceService.createPurchaser(name);
-    console.log('added purchaser', purchaser);
     commit('setPurchasers', [...state.purchasers, purchaser]);
     commit('setUserPurchasersList', [...state.userPurchaserList, purchaser]);
   },
@@ -73,7 +70,6 @@ const actions: ActionTree<AppStateInterface, StateInterface> = {
     ) as ResponseObject<IPurchase>[];
 
     copy[purchaseReferenceIndex].attributes = purchase;
-    console.log('add purchasers to purchase', purchase);
     commit('setCurrentInvoice', {
       ...state.currentInvoice,
       purchases: {
@@ -84,7 +80,6 @@ const actions: ActionTree<AppStateInterface, StateInterface> = {
 
   async loadUserPurchasersList({ commit }) {
     const list = await invoiceService.getPurchasers();
-    console.log(list);
     commit('setUserPurchasersList', list);
   },
 };

@@ -14,8 +14,6 @@ const mutation: MutationTree<AuthStateInterface> = {
     state.token = {
       access_token: payload.jwt,
     };
-
-    console.log('state set', state);
   },
   setLoggedOut(state: AuthStateInterface) {
     state.isLoggedIn = false;
