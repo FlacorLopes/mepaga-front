@@ -61,7 +61,6 @@ export default defineComponent({
         await this.$store.dispatch('invoices/addPurchaser', this.nameValue);
         this.nameValue = '';
         this.loading = false;
-        console.log('adicionado com sucesso');
       } catch (error) {
         console.log(error);
       }

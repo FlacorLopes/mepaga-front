@@ -360,7 +360,6 @@ export default defineComponent({
         (p) => p.id == targetPurchaser.id
       );
 
-      // console.log(index, this.dividingPurchasers);
       return index + 1;
     },
   },
