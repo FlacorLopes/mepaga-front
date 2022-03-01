@@ -1,3 +1,4 @@
+import { date } from 'quasar';
 import {
   IInvoice,
   IPurchase,
@@ -26,6 +27,7 @@ const actions: ActionTree<AppStateInterface, StateInterface> = {
 
     // separates unique purchasers into purchasersFound
     invoice.purchases.data.forEach((p) => {
+      p.attributes.date = date.formatDate(p.attributes.date, 'DD MM YYYY');
       p.attributes.purchasers.data.forEach((purchaser) => {
         if (
           !purchasersFound.some(

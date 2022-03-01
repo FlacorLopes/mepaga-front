@@ -46,14 +46,36 @@
             <q-icon name="lock" />
           </template>
         </q-input>
-        <q-btn
-          push
-          color="positive"
-          icon="login"
-          label="Login"
-          :loading="auth.loading"
-          @click="login"
-        />
+        <q-input
+          v-model="formLogin.confirmPassword"
+          type="password"
+          label="confirme a senha"
+          v-if="isRegistering"
+        >
+          <template v-slot:prepend>
+            <q-icon name="lock" />
+          </template>
+        </q-input>
+        <div class="column q-gutter-y-sm">
+          <q-btn
+            push
+            color="positive"
+            label="Entrar"
+            class="col"
+            align="center"
+            :loading="auth.loading"
+            @click="login"
+          />
+          <q-btn
+            push
+            color="primary"
+            icon="img:images/google.svg"
+            label="Entrar com o google"
+            class="col"
+            :loading="auth.loading"
+            href="http://localhost:1337/api/connect/google"
+          />
+        </div>
       </div>
       <div class="q-pa-md q-gutter-sm" v-else>
         <q-item clickable :to="{ name: 'MyInvoices' }">
@@ -86,9 +108,11 @@ export default {
   setup() {
     const store = useStore();
     const router = useRouter();
+    const isRegistering = ref(false);
     const formLogin = reactive({
       email: '',
       password: '',
+      confirmPassword: '',
     });
     const auth = computed(() => store.state?.authentication);
     const rightDrawerOpen = ref(!auth.value.isLoggedIn ? true : false);
@@ -114,6 +138,7 @@ export default {
     return {
       rightDrawerOpen,
       formLogin,
+      isRegistering,
       auth,
       toggleRightDrawer,
       login,

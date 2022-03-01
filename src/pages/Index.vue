@@ -19,7 +19,9 @@
       ]"
       @uploaded="onUploadFinish"
       flat
-    />
+    >
+      <q-spinner class="relative-center" color="primary" size="28px" />
+    </q-uploader>
   </div>
 </template>
 

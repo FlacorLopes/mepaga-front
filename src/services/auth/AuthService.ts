@@ -1,6 +1,7 @@
 import { AxiosInstance } from 'axios';
 import { api } from 'src/boot/axios';
 import { AuthRequestDTO, AuthResponseDTO } from 'src/services/auth/dto/AuthDTO';
+import { LocalStorage } from 'quasar';
 
 export interface IAuthService {
   login(params: AuthRequestDTO): Promise<AuthResponseDTO>;
@@ -24,8 +25,32 @@ export class AuthService implements IAuthService {
     return response.data as AuthResponseDTO;
   }
 
+  async googleLogin(access_token: string): Promise<AuthResponseDTO> {
+    const response = await this.api.get(
+      `http://localhost:1337/api/auth/google/callback?access_token=${access_token}`
+    );
+
+    if (response.status !== 200) throw new Error(response.statusText);
+    const authResponse = response.data as AuthResponseDTO;
+
+    (this.api.defaults.headers as { Authorization: string })['Authorization'] =
+      'Bearer ' + authResponse.jwt;
+
+    try {
+      LocalStorage.set('authentication', {
+        jwt: authResponse.jwt,
+        user: authResponse.user,
+      } as AuthResponseDTO);
+    } catch (error) {
+      console.log(error);
+    }
+
+    return response.data as AuthResponseDTO;
+  }
+
   logout() {
     (this.api.defaults.headers as { Authorization: string })['Authorization'] =
       null;
+    LocalStorage.remove('authentication');
   }
 }

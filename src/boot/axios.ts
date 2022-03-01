@@ -1,5 +1,7 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
+import { LocalStorage } from 'quasar';
+import { AuthResponseDTO } from 'src/services/auth/dto/AuthDTO';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -15,7 +17,7 @@ declare module '@vue/runtime-core' {
 // for each client)
 const api = axios.create({ baseURL: 'http://localhost:1337/' });
 
-export default boot(({ app }) => {
+export default boot(({ app, store }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axios;
@@ -25,6 +27,22 @@ export default boot(({ app }) => {
   app.config.globalProperties.$api = api;
   // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
   //       so you can easily perform requests against your app's API
+
+  const authStorage: AuthResponseDTO = LocalStorage.getItem('authentication');
+  console.log('axios auth', authStorage);
+
+  if (authStorage?.jwt) store.commit('authentication/setLoggedIn', authStorage);
+  else store.commit('authentication/setLoggedOut');
+
+  api.interceptors.request.use((config) => {
+    const authStorage: AuthResponseDTO = LocalStorage.getItem('authentication');
+
+    if (authStorage?.user) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      api.defaults.headers['Authorization'] = 'Bearer ' + authStorage.jwt;
+    }
+    return config;
+  });
 });
 
 export { api };

@@ -31,7 +31,7 @@
                 <div
                   class="row text-subtitle2 q-gutter-x-md text-weight-regular text-mp-white-0 items-center"
                 >
-                  <div>{{ p.attributes.date }}</div>
+                  <div class="text-caption">{{ p.attributes.date }}</div>
                   <div
                     class="text-subtitle1 text-weight-medium text-lowercase text-mp-white-0 mp-purchase-line"
                     style="width: 250px; max-width: 250px; max-height: 30px"

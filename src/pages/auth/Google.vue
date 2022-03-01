@@ -5,24 +5,29 @@
 </template>
 
 <script lang="ts">
-import { api } from 'src/boot/axios';
+import { AuthService } from 'src/services/auth/AuthService';
+import { useStore } from 'src/store';
 import { defineComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
+
+const authService = new AuthService();
 export default defineComponent({
   // name: 'PageName'
-  async setup() {
+  setup() {
     const router = useRouter();
+    const store = useStore();
     const access_token = computed(
       () => router.currentRoute.value.query.access_token
     );
 
     if (access_token.value) {
-      const response = await api.get(
-        `http://localhost:1337/api/auth/google/callback?access_token=${
-          access_token.value as string
-        }`
-      );
-      console.log(response);
+      void authService
+        .googleLogin(<string>access_token.value)
+        .then((response) => {
+          console.log(response);
+          store.commit('authentication/setLoggedIn', response);
+          void router.push('/');
+        });
     }
   },
 });

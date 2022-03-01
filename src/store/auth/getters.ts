@@ -3,7 +3,7 @@ import { StateInterface } from '../index';
 import { AuthStateInterface } from './state';
 
 const getters: GetterTree<AuthStateInterface, StateInterface> = {
-  auth(state: AuthStateInterface) {
+  auth(state: AuthStateInterface): AuthStateInterface {
     return {
       ...state,
     };

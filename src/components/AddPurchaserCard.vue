@@ -7,7 +7,15 @@
       class="column q-gutter-y-sm no-wrap items-center"
       style="max-height: 80px"
     >
-      <q-input autofocus dense label="adicione uma pessoa" v-model="nameValue">
+      <q-input
+        autofocus
+        dense
+        label="adicione uma pessoa"
+        v-model="nameValue"
+        :error="error"
+        :error-message="errorMessage"
+        hide-bottom-space
+      >
         <template v-slot:prepend>
           <q-icon name="face" />
         </template>
@@ -17,9 +25,11 @@
         color="mp-green-0"
         label="Adicionar"
         size="sm"
+        v-if="!error"
         :loading="loading"
         :disable="nameValue.length < 2 || nameValue.length > 10"
         @click="addPurchaser"
+        @blur="error = false"
       />
     </div>
   </q-card>
@@ -47,22 +57,30 @@ export default defineComponent({
   setup() {
     const nameValue = ref('');
     const loading = ref(false);
+    const error = ref(false);
+    const errorMessage = ref('');
 
     return {
       nameValue,
       loading,
+      error,
+      errorMessage,
     };
   },
 
   methods: {
     async addPurchaser() {
       try {
+        this.error = false;
         this.loading = true;
         await this.$store.dispatch('invoices/addPurchaser', this.nameValue);
         this.nameValue = '';
         this.loading = false;
       } catch (error) {
         console.log(error);
+        this.error = true;
+        this.errorMessage = 'Já existe uma pessoa com esse nome';
+        this.loading = false;
       }
     },
   },
