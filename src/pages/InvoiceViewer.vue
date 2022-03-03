@@ -311,9 +311,21 @@ export default defineComponent({
       if (!this.isSelecting) return;
 
       if (this.isDividing) {
-        this.dividingPurchasers.push(purchaser);
+        // if is performing purchase division, then just adds the purhcaser
+        // to the division list
+        if (this.dividingPurchasers.some((p) => p.id === purchaser.id)) {
+          // removes purchaser from division if already in the list
+          const indexInDivision = this.dividingPurchasers.findIndex(
+            (p) => p.id === purchaser.id
+          );
+
+          if (indexInDivision >= 0) {
+            this.dividingPurchasers.splice(indexInDivision, 1);
+          }
+        } else this.dividingPurchasers.push(purchaser);
         return;
       } else {
+        // otherwise just requests to add it
         await this.requestAddPurchaser([purchaser.id]);
       }
     },
