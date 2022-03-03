@@ -166,6 +166,7 @@
               label="Finalizar Divisão"
               color="positive"
               class="col"
+              :disable="dividingPurchasers.length === 0"
               @click="handleDivisionFinish"
             />
           </div>
@@ -367,6 +368,10 @@ export default defineComponent({
       return purchases.length;
     },
 
+    /**
+     * Gets the position of a Purchaser in a Purchase division.
+     * @returns {number} positive index
+     */
     getDividingPurchaseNumber(targetPurchaser: IPurchaser): number {
       const index = this.dividingPurchasers.findIndex(
         (p) => p.id == targetPurchaser.id
