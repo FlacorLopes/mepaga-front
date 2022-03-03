@@ -29,10 +29,12 @@ export default boot(({ app, store }) => {
   //       so you can easily perform requests against your app's API
 
   const authStorage: AuthResponseDTO = LocalStorage.getItem('authentication');
-  console.log('axios auth', authStorage);
 
-  if (authStorage?.jwt) store.commit('authentication/setLoggedIn', authStorage);
-  else store.commit('authentication/setLoggedOut');
+  if (authStorage?.jwt) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    api.defaults.headers['Authorization'] = 'Bearer ' + authStorage.jwt;
+    store.commit('authentication/setLoggedIn', authStorage);
+  } else store.commit('authentication/setLoggedOut');
 
   api.interceptors.request.use((config) => {
     const authStorage: AuthResponseDTO = LocalStorage.getItem('authentication');

@@ -45,6 +45,7 @@ const actions: ActionTree<AppStateInterface, StateInterface> = {
 
   async addPurchaser({ commit, state }, name: string) {
     const purchaser = await invoiceService.createPurchaser(name);
+    console.log(purchaser);
     commit('setPurchasers', [...state.purchasers, purchaser]);
     commit('setUserPurchasersList', [...state.userPurchaserList, purchaser]);
   },
