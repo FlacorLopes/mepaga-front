@@ -93,7 +93,7 @@
       </div>
     </q-drawer>
 
-    <q-page-container class="q-px-sm-sm q-px-md-xl">
+    <q-page-container class="q-px-sm-md q-px-md-xl">
       <router-view />
     </q-page-container>
   </q-layout>

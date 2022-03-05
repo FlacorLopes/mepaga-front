@@ -1,8 +1,8 @@
 <template>
-  <div class="q-pt-xl q-px-md q-gutter-y-xl mp-ubuntu">
-    <div class="row q-gutter-x-md">
+  <div class="q-pt-xl q-px-md-md q-gutter-y-xl mp-ubuntu">
+    <div class="column-xs row-md q-gutter-xs-x-none q-gutter-md-x-md">
       <loading-table-skeleton v-if="loading || !currentInvoice" />
-      <q-card class="mp-card col-sm-7 col-12" v-else>
+      <q-card class="mp-card col-sm-7 col-xs-12" v-else>
         <q-card-section :class="{ blured: isSelecting }">
           <div class="text-mp-blue-1 text-subtitle1 text-weight-medium">
             Sua fatura de {{ dueDate }}
@@ -27,14 +27,22 @@
                   : ''
               "
             >
-              <div class="column-xs row-sm q-px-lg q-py-sm">
+              <div class="column-xs row-sm q-px-lg q-py-sm no-wrap">
                 <div
-                  class="row text-subtitle2 q-gutter-x-md text-weight-regular text-mp-white-0 items-center"
+                  class="column q-gutter-x-md text-weight-regular text-mp-white-0"
                 >
-                  <div class="text-caption">{{ p.attributes.date }}</div>
+                  <q-chip
+                    color="mp-white-0"
+                    dense
+                    text-color="mp-red-0"
+                    style="width: 80px; max-width: 80px"
+                  >
+                    <div class="text-caption text-mp-blue-1">
+                      {{ p.attributes.date }}
+                    </div>
+                  </q-chip>
                   <div
                     class="text-subtitle1 text-weight-medium text-lowercase text-mp-white-0 mp-purchase-line"
-                    style="width: 250px; max-width: 250px; max-height: 30px"
                   >
                     {{ p.attributes.title }}
                   </div>
@@ -50,6 +58,7 @@
                   >
                     R$ {{ p.attributes.price.toFixed(2) }}
                   </q-chip>
+
                   <q-chip
                     :color="p.attributes.isShared ? 'warning' : 'positive'"
                     dense
