@@ -1,6 +1,8 @@
 <template>
-  <div class="q-pt-xl q-px-md-md q-gutter-y-xl mp-ubuntu">
-    <div class="column-xs row-md q-gutter-xs-x-none q-gutter-md-x-md">
+  <div class="q-pt-xl q-px-md-md q-px-xs-sm mp-ubuntu">
+    <div
+      class="column-xs row-md q-gutter-xs-x-none q-gutter-y-xl q-gutter-md-x-md"
+    >
       <loading-table-skeleton v-if="loading || !currentInvoice" />
       <q-card class="mp-card col-sm-7 col-xs-12" v-else>
         <q-card-section :class="{ blured: isSelecting }">
@@ -48,7 +50,7 @@
                   </div>
                 </div>
                 <q-space />
-                <div class="row items-center q-gutter-x-sm">
+                <div class="row items-center q-gutter-x-sm q-mt-xs-md">
                   <q-chip
                     color="mp-white-0"
                     dense
@@ -119,11 +121,14 @@
                 <div class="text-subtitle2 text-mp-lightblue-0">
                   Número de compras
                 </div>
-                <div class="text-subtitle1 text-mp-red-1">
+                <div class="text-subtitle2 text-mp-red-1">
                   {{ currentInvoice.purchasesNumber }}
                 </div>
               </div>
-              <div class="row q-gutter-x-md justify-end">
+              <div
+                class="row q-gutter-x-md"
+                :class="{ 'justify-end': $q.screen.gt.xs }"
+              >
                 <div class="text-subtitle2 text-mp-lightblue-0">
                   Compradores
                 </div>
@@ -145,18 +150,20 @@
           </div>
         </q-card-section>
         <q-card-section class="q-gutter-y-md">
-          <div class="row q-gutter-x-md">
-            <purchaser-card
-              useUserStyle
-              :value="userPurchasesValue.toFixed(2)"
-              :purchaseAmount="userPurchases?.length || 0"
-              :badgeNumber="getDividingPurchaseNumber(userPurchaser)"
-              :class="{ 'cursor-pointer': isSelecting }"
-              @click="handlePurchaserClick(userPurchaser)"
-            />
-            <add-purchaser-card />
+          <div>
+            <div class="row q-gutter-md">
+              <add-purchaser-card />
+              <purchaser-card
+                useUserStyle
+                :value="userPurchasesValue.toFixed(2)"
+                :purchaseAmount="userPurchases?.length || 0"
+                :badgeNumber="getDividingPurchaseNumber(userPurchaser)"
+                :class="{ 'cursor-pointer': isSelecting }"
+                @click="handlePurchaserClick(userPurchaser)"
+              />
+            </div>
           </div>
-          <q-scroll-area style="height: 240px" class="full-width q-pb-xs">
+          <q-scroll-area style="height: 240px" class="q-pb-xs">
             <div class="row q-gutter-md">
               <purchaser-card
                 v-for="purchaser in purchasersList"

@@ -1,9 +1,9 @@
 <template>
   <q-card
-    class="q-px-md q-pt-none col"
-    style="max-width: 220px; max-height: 88px"
+    class="q-px-md q-pt-none col-xs col"
+    style="min-width: 180px; max-width: 220px"
   >
-    <div class="column q-gutter-y-sm no-wrap" style="max-height: 80px">
+    <div class="column q-gutter-y-sm no-wrap">
       <q-select
         autofocus
         dense
@@ -49,6 +49,7 @@
         color="mp-green-0"
         label="Adicionar"
         size="sm"
+        class="q-mb-xs-md"
         :loading="loading"
         :disable="
           newPurchaser?.name?.length < 2 || newPurchaser?.name?.length > 10
@@ -198,4 +199,3 @@ export default defineComponent({
   },
 });
 </script>
-<style lang="scss" scoped></style>
