@@ -1,34 +1,71 @@
 <template>
   <div class="q-pt-xl q-px-md q-gutter-y-xl mp-ubuntu">
     <div class="q-gutter-md">
-      <div class="text-h4 text-weight-bold text-primary">Bem Vindx</div>
+      <div class="text-h5 text-weight-bold text-primary">Bem Vindo(a)!</div>
+
       <div style="max-width: 450px">
-        O MePaga te ajuda a organizar a fatura do seu cartão. Para começar,
+        O MePaga te ajuda as organizar a faturas do seu cartão. Para começar,
         importe uma fatura.
       </div>
     </div>
-    <q-uploader
-      :url="`http://localhost:1337/api/invoices/upload?bank=${'nubank'}`"
-      color="positive"
-      style="width: 100%; height: 100%"
-      class="bd-uploader"
-      accept="application/pdf"
-      method="POST"
-      :headers="[
-        { name: 'Authorization', value: `Bearer ${auth.token?.access_token}` },
-      ]"
-      @uploaded="onUploadFinish"
-      flat
-    >
-      <q-spinner class="relative-center" color="primary" size="28px" />
-    </q-uploader>
+
+    <div class="col column items-center relative-position">
+      <q-select
+        v-if="auth.isLoggedIn"
+        v-model="selectedBank"
+        :options="bankList"
+        label="Selecione o Banco"
+        class="absolute-center"
+        style="z-index: 999; width: 30%"
+        :disable="selectedBank !== null || !auth.isLoggedIn"
+        @update:model-value="onBankSelected"
+      >
+        <template v-slot:append>
+          <q-icon name="credit_card" color="primary" />
+        </template>
+      </q-select>
+      <q-btn
+        v-if="!auth.isLoggedIn"
+        push
+        color="primary"
+        icon="img:images/google.svg"
+        label="Entrar com o google"
+        class="absolute-center"
+        style="z-index: 999"
+        :style="$q.screen.lt.sm ? 'width: 80%' : 'width: 40%'"
+        :loading="auth.loading"
+        href="http://localhost:1337/api/connect/google"
+      />
+      <q-uploader
+        :url="`http://localhost:1337/api/invoices/upload?bank=${selectedBank?.toLocaleLowerCase()}`"
+        color="positive"
+        style="width: 100%; height: 100%"
+        class="bd-uploader relative-position"
+        accept="application/pdf"
+        method="POST"
+        :headers="[
+          {
+            name: 'Authorization',
+            value: `Bearer ${auth.token?.access_token}`,
+          },
+        ]"
+        auto-upload
+        @uploaded="onUploadFinish"
+        @failed="onFailed"
+        :disable="selectedBank === null || !auth.isLoggedIn"
+        ref="uploader"
+        flat
+      >
+      </q-uploader>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
+import { QUploader, useQuasar } from 'quasar';
 import { IInvoice } from 'src/services/app/dto/InvoiceDTO';
 import { useStore } from 'src/store';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 interface QUploadInfo {
@@ -42,13 +79,38 @@ export default defineComponent({
     const store = useStore();
     const auth = computed(() => store.state?.authentication);
     const router = useRouter();
+    const selectedBank = ref<string>(null);
+    const bankList = ref<string[]>(['Nubank']);
+    const $q = useQuasar();
+    const uploaderRef = ref<InstanceType<typeof QUploader>>();
 
     const onUploadFinish = async (info: QUploadInfo) => {
       const invoice = JSON.parse(info.xhr.response) as IInvoice;
       await router.push(`/fatura/${invoice.id}`);
     };
 
-    return { auth, onUploadFinish };
+    const onFailed = (info: QUploadInfo) => {
+      console.log(info.xhr.response);
+
+      $q.notify({
+        type: 'warning',
+        message:
+          'Não foi possível ler sua fatura no momento. Por favor, tente mais tarde.',
+      });
+    };
+
+    const onBankSelected = () => {
+      // uploaderRef.value.
+    };
+    return {
+      auth,
+      selectedBank,
+      bankList,
+      uploaderRef,
+      onUploadFinish,
+      onFailed,
+      onBankSelected,
+    };
   },
 });
 </script>

@@ -5,7 +5,6 @@
   >
     <div class="column q-gutter-y-sm no-wrap">
       <q-select
-        autofocus
         dense
         use-input
         use-chips

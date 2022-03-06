@@ -33,7 +33,7 @@
           v-show="badgeNumber >= 1"
         />
         <div class="text-subtitle1 text-mp-red-0 text-weight-medium">
-          R$ {{ value }}
+          R$ {{ formatCurrency(+value) }}
         </div>
         <div class="text-caption text-mp-blue-1" style="margin-top: -5px">
           {{ purchaseAmount }} compras
@@ -43,6 +43,7 @@
   </q-card>
 </template>
 <script lang="ts">
+import { formatCurrency } from '@brazilian-utils/brazilian-utils';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -70,8 +71,10 @@ export default defineComponent({
       default: false,
     },
   },
-  // setup() {
-
-  // },
+  setup() {
+    return {
+      formatCurrency,
+    };
+  },
 });
 </script>

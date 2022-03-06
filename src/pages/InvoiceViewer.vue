@@ -44,7 +44,7 @@
                     </div>
                   </q-chip>
                   <div
-                    class="text-subtitle1 text-weight-medium text-lowercase text-mp-white-0 mp-purchase-line"
+                    class="text-subtitle2 text-weight-medium text-lowercase text-mp-white-0 mp-purchase-line"
                   >
                     {{ p.attributes.title }}
                   </div>
@@ -58,7 +58,7 @@
                     icon="paid"
                     style="width: 90px; max-width: 90px"
                   >
-                    R$ {{ p.attributes.price.toFixed(2) }}
+                    R$ {{ formatCurrency(p.attributes.price) }}
                   </q-chip>
 
                   <q-chip
@@ -112,7 +112,7 @@
             <div class="row q-gutter-x-md">
               <div class="text-h5 text-mp-lightblue-0">TOTAL</div>
               <div class="text-h5 text-mp-red-1">
-                R$ {{ currentInvoice.total }}
+                R$ {{ formatCurrency(currentInvoice.total) }}
               </div>
             </div>
             <q-space />
@@ -202,6 +202,7 @@ import PurchaserCard from 'src/components/PurchaserCard.vue';
 import AddPurchaserCard from 'src/components/AddPurchaserCard.vue';
 import { getPurchaseOwner } from 'src/utils/InvoiceUtils';
 import { IPurchase, IPurchaser } from 'src/services/app/dto/InvoiceDTO';
+import { formatCurrency } from '@brazilian-utils/brazilian-utils';
 
 export default defineComponent({
   components: { LoadingTableSkeleton, PurchaserCard, AddPurchaserCard },
@@ -297,6 +298,7 @@ export default defineComponent({
       dividingPurchasers,
       getPurchaseOwner,
       getDividedPrice,
+      formatCurrency,
     };
   },
   methods: {

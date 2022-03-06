@@ -6,7 +6,10 @@
       class="text-white mp-header mp-ubuntu q-px-sm-sm q-px-md-xl q-py-xs"
     >
       <q-toolbar>
-        <q-toolbar-title class="mp-logo-title">MePaga</q-toolbar-title>
+        <q-toolbar-title class="mp-logo-title">
+          MePaga
+          <sup style="font-size: 12px">beta</sup>
+        </q-toolbar-title>
 
         <div class="row q-gutter-md">
           <q-avatar
@@ -35,7 +38,11 @@
       bordered
       class="mp-drawer"
     >
-      <div class="q-pa-md q-gutter-sm" v-if="!auth.isLoggedIn">
+      <div
+        class="q-pa-md q-gutter-sm"
+        v-if="!auth.isLoggedIn"
+        style="height: 100%"
+      >
         <q-input v-model="formLogin.email" type="email" label="email">
           <template v-slot:prepend>
             <q-icon name="mail" />
@@ -56,28 +63,39 @@
             <q-icon name="lock" />
           </template>
         </q-input>
-        <div class="column q-gutter-y-sm">
-          <q-btn
-            push
-            color="positive"
-            label="Entrar"
-            class="col"
-            align="center"
-            :loading="auth.loading"
-            @click="login"
-          />
-          <q-btn
-            push
-            color="primary"
-            icon="img:images/google.svg"
-            label="Entrar com o google"
-            class="col"
-            :loading="auth.loading"
-            href="http://localhost:1337/api/connect/google"
-          />
+        <div class="column q-mt-md justify-between" style="height: 70%">
+          <div class="column q-gutter-y-sm">
+            <q-btn
+              push
+              color="positive"
+              label="Entrar"
+              class="col"
+              align="center"
+              :loading="auth.loading"
+              @click="login"
+            />
+            <q-btn
+              push
+              color="primary"
+              icon="img:images/google.svg"
+              label="Entrar com o google"
+              class="col"
+              :loading="auth.loading"
+              href="http://localhost:1337/api/connect/google"
+            />
+          </div>
+
+          <div>
+            <q-item clickable @click="showAbout = true">
+              <q-item-section avatar>
+                <q-icon name="help" color="primary" />
+              </q-item-section>
+              <q-item-section> Sobre o MePaga </q-item-section>
+            </q-item>
+          </div>
         </div>
       </div>
-      <div class="q-pa-md q-gutter-sm" v-else>
+      <div class="column q-pa-md q-gutter-sm" v-else style="height: 100%">
         <q-item clickable :to="{ name: 'MyInvoices' }">
           <q-item-section avatar>
             <q-icon name="credit_card" color="primary" />
@@ -90,11 +108,46 @@
           </q-item-section>
           <q-item-section> Sair </q-item-section>
         </q-item>
+        <q-space />
+        <div style="opacity: 0.8">
+          <q-item clickable @click="showAbout = true">
+            <q-item-section avatar>
+              <q-icon name="help" color="primary" />
+            </q-item-section>
+            <q-item-section> Sobre o MePaga </q-item-section>
+          </q-item>
+        </div>
       </div>
     </q-drawer>
 
     <q-page-container class="q-px-sm-md q-px-md-xl">
       <router-view />
+      <q-dialog v-model="showAbout">
+        <q-card>
+          <q-card-section class="q-gutter-y-md">
+            <div class="text-h6">Sobre o MePaga</div>
+            <div class="text-body2">
+              O MePaga foi criado para ajudar minha namorada a calcular as
+              compras feitas em seu cartão por amigos e familiares. Agora foi
+              disponibilizado para ajudar outras pessoas a organizar suas
+              faturas.
+            </div>
+
+            <div class="row q-gutter-sm">
+              <q-btn
+                icon="img:images/linkedin.svg"
+                label="Flávio Lopes"
+                target="_blank"
+                href="https://www.linkedin.com/in/flaviovlopes/"
+              />
+            </div>
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn flat label="OK" color="primary" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
@@ -116,6 +169,7 @@ export default {
     });
     const auth = computed(() => store.state?.authentication);
     const rightDrawerOpen = ref(!auth.value.isLoggedIn ? true : false);
+    const showAbout = ref(false);
 
     const toggleRightDrawer = () => {
       rightDrawerOpen.value = !rightDrawerOpen.value;
@@ -140,6 +194,7 @@ export default {
       formLogin,
       isRegistering,
       auth,
+      showAbout,
       toggleRightDrawer,
       login,
       logout,

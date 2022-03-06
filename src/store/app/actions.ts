@@ -15,6 +15,16 @@ const actions: ActionTree<AppStateInterface, StateInterface> = {
   async load({ commit }) {
     commit('setLoading', true);
     const invoices = await invoiceService.getInvoices();
+
+    invoices.forEach((i) => {
+      // p.attributes.date = date.formatDate(p.attributes.date, 'DD MM YYYY');
+      console.log(i);
+      (i as unknown as ResponseObject<IInvoice>).attributes.dueDate =
+        date.formatDate(
+          (i as unknown as ResponseObject<IInvoice>).attributes.dueDate,
+          'DD MM YYYY'
+        );
+    });
     commit('setInvoices', invoices);
   },
 
