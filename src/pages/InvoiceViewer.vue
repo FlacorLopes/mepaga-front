@@ -10,7 +10,11 @@
             Sua fatura de {{ dueDate }}
           </div>
           <div class="text-mp-blue-1 text-subtitle2 text-weight-light">
-            clique em um linha para atribuir a dívida a alguém
+            <div clss="row items-base">
+              clique em um linha, ou no menu
+              <q-icon name="more_horiz" color="primary" size="sm" />, para
+              atribuir a dívida a alguém
+            </div>
           </div>
         </q-card-section>
         <q-card-section>
@@ -146,7 +150,7 @@
             Usuários de seu cartão nessa fatura
           </div>
           <div class="text-mp-blue-1 text-subtitle2 text-weight-light">
-            clique ou passe o mouse sobre um card para removê-lo
+            clique em um card de comprador para atribuir a compra a ele
           </div>
         </q-card-section>
         <q-card-section class="q-gutter-y-md">
