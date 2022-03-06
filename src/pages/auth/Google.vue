@@ -24,7 +24,6 @@ export default defineComponent({
       void authService
         .googleLogin(<string>access_token.value)
         .then((response) => {
-          console.log(response);
           store.commit('authentication/setLoggedIn', response);
           void router.push('/');
         });

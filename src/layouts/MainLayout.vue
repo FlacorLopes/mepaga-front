@@ -81,7 +81,7 @@
               label="Entrar com o google"
               class="col"
               :loading="auth.loading"
-              href="http://localhost:1337/api/connect/google"
+              :href="googleAuth"
             />
           </div>
 
@@ -195,6 +195,7 @@ export default {
       isRegistering,
       auth,
       showAbout,
+      googleAuth: process.env.GOOGLE_AUTH,
       toggleRightDrawer,
       login,
       logout,

@@ -27,8 +27,10 @@ export class AuthService implements IAuthService {
 
   async googleLogin(access_token: string): Promise<AuthResponseDTO> {
     const response = await this.api.get(
-      `http://localhost:1337/api/auth/google/callback?access_token=${access_token}`
+      `${process.env.API_URL}api/auth/google/callback?access_token=${access_token}`
     );
+
+    console.log(response);
 
     if (response.status !== 200) throw new Error(response.statusText);
     const authResponse = response.data as AuthResponseDTO;

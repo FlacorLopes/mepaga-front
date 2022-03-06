@@ -34,10 +34,10 @@
         style="z-index: 999"
         :style="$q.screen.lt.sm ? 'width: 80%' : 'width: 40%'"
         :loading="auth.loading"
-        href="http://localhost:1337/api/connect/google"
+        :href="googleAuth"
       />
       <q-uploader
-        :url="`http://localhost:1337/api/invoices/upload?bank=${selectedBank?.toLocaleLowerCase()}`"
+        :url="`${API_URL}api/invoices/upload?bank=${selectedBank?.toLocaleLowerCase()}`"
         color="positive"
         style="width: 100%; height: 100%"
         class="bd-uploader relative-position"
@@ -107,6 +107,8 @@ export default defineComponent({
       selectedBank,
       bankList,
       uploaderRef,
+      googleAuth: process.env.GOOGLE_AUTH,
+      API_URL: process.env.API_URL,
       onUploadFinish,
       onFailed,
       onBankSelected,
