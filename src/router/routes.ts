@@ -4,8 +4,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/Index.vue') }],
+  },
+  {
+    path: '/area-privada',
+    component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') },
       {
         name: 'MyInvoices',
         path: 'minhas-faturas',
@@ -13,7 +17,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'InvoiceViewer',
-        path: '/fatura/:id',
+        path: 'fatura/:id',
         component: () => import('pages/InvoiceViewer.vue'),
       },
     ],

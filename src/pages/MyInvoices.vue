@@ -96,9 +96,13 @@ export default {
 
     store.dispatch('invoices/load').catch((reason) => alert(reason));
 
-    const goToInvoice = async (row: { id: string }) => {
-      console.log(row);
-      await router.push('/fatura/' + row.id);
+    const goToInvoice = async (row: { attributes: { uid: string } }) => {
+      await router.push({
+        name: 'InvoiceViewer',
+        params: {
+          id: row.attributes.uid,
+        },
+      });
     };
 
     return {

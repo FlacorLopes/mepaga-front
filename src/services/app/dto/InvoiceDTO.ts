@@ -13,7 +13,7 @@ export interface IInvoice {
   purchasesNumber: number;
   purchases: StrapiCollectionResponseWrapper<IPurchase>;
   BANK: BankTypes;
-  uuid: string;
+  uid: string;
 }
 
 export interface IPurchase {

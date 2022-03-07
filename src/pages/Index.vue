@@ -86,7 +86,12 @@ export default defineComponent({
 
     const onUploadFinish = async (info: QUploadInfo) => {
       const invoice = JSON.parse(info.xhr.response) as IInvoice;
-      await router.push(`/fatura/${invoice.id}`);
+      await router.push({
+        name: 'InvoiceViewer',
+        params: {
+          id: invoice.uid,
+        },
+      });
     };
 
     const onFailed = (info: QUploadInfo) => {
