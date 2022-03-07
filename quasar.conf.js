@@ -51,10 +51,10 @@ module.exports = configure(function (ctx) {
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       env: {
-        API_URL: ctx.dev ? 'http://localhost:1337/' : 'http://localhost:1337/',
+        API_URL: ctx.dev ? 'http://localhost:1337/' : 'https://api.mepaga.net',
         GOOGLE_AUTH: ctx.dev
-          ? 'http://localhost:1337/api/connect/google/'
-          : 'http://localhost:1337/api/connect/google/',
+          ? 'https://api.mepaga.net/api/connect/google/'
+          : 'https://api.mepaga.net/api/connect/google/',
       },
       // transpile: false,
       // publicPath: '/',
