@@ -1,5 +1,5 @@
 {
-  "name": "bora-dividir-frontend",
+  "name": "mepaga",
   "version": "0.0.1",
   "description": "Organize a fatura de seus cartões",
   "productName": "MePaga",
@@ -7,7 +7,9 @@
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "build": "quasar build",
+    "deploy": "vercel"
   },
   "dependencies": {
     "@brazilian-utils/brazilian-utils": "^1.0.0-rc.12",
