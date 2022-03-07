@@ -51,14 +51,13 @@ module.exports = configure(function (ctx) {
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       env: {
-        API_URL: ctx.dev ? 'http://localhost:1337/' : 'https://api.mepaga.net',
+        API_URL: ctx.dev ? 'http://localhost:1337/' : 'https://api.mepaga.net/',
         GOOGLE_AUTH: ctx.dev
           ? 'https://api.mepaga.net/api/connect/google/'
           : 'https://api.mepaga.net/api/connect/google/',
       },
       // transpile: false,
       // publicPath: '/',
-      distDir: ctx.mode.spa ? 'public' : null,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).
