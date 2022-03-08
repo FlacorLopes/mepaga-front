@@ -89,7 +89,7 @@ export default defineComponent({
       await router.push({
         name: 'InvoiceViewer',
         params: {
-          id: invoice.uid,
+          id: String(invoice.uid),
         },
       });
     };
