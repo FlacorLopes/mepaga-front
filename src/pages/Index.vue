@@ -16,7 +16,7 @@
         :options="bankList"
         label="Selecione o Banco"
         class="absolute-center"
-        style="z-index: 999; width: 30%"
+        :style="`z-index: 999; ${$q.screen.lt.md ? 'width: 50%' : '30%'}`"
         :disable="selectedBank !== null || !auth.isLoggedIn"
         @update:model-value="onBankSelected"
       >
@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { QUploader, useQuasar } from 'quasar';
+import { QUploader, useMeta, useQuasar } from 'quasar';
 import { IInvoice } from 'src/services/app/dto/InvoiceDTO';
 import { useStore } from 'src/store';
 import { defineComponent, computed, ref } from 'vue';
@@ -73,6 +73,36 @@ interface QUploadInfo {
     response: string;
   };
 }
+
+const metaData = {
+  title: 'Importe uma Fatura',
+  titleTemplate: (title: string) =>
+    `${title} - MePaga | Organize as Faturas de Seus Cartões`,
+
+  // meta tags
+  meta: {
+    description: {
+      name: 'description',
+      content: 'Importe a fatura do seu cartão em PDF e organize por compra.',
+    },
+    keywords: {
+      name: 'keywords',
+      content: 'fatura,cartão,pdf,importar fatura,dividir compras,compras,',
+    },
+    equiv: {
+      'http-equiv': 'Content-Type',
+      content: 'text/html; charset=UTF-8',
+    },
+    // note: for Open Graph type metadata you will need to use SSR, to ensure page is rendered by the server
+    ogTitle: {
+      property: 'og:title',
+      // optional; similar to titleTemplate, but allows templating with other meta properties
+      template(ogTitle: string) {
+        return `${ogTitle} - MePaga | Organize as Faturas de Seus Cartões`;
+      },
+    },
+  },
+};
 export default defineComponent({
   name: 'PageIndex',
   setup() {
@@ -83,6 +113,7 @@ export default defineComponent({
     const bankList = ref<string[]>(['Nubank']);
     const $q = useQuasar();
     const uploaderRef = ref<InstanceType<typeof QUploader>>();
+    useMeta(metaData);
 
     const onUploadFinish = async (info: QUploadInfo) => {
       const invoice = JSON.parse(info.xhr.response) as IInvoice;

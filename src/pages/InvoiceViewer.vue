@@ -192,13 +192,42 @@ import { useStore } from 'src/store';
 import { useRouter } from 'vue-router';
 import { defineComponent, computed, ref } from 'vue';
 import LoadingTableSkeleton from 'src/components/LoadingTableSkeleton.vue';
-import { date, QDialog, useQuasar } from 'quasar';
+import { date, QDialog, useMeta, useQuasar } from 'quasar';
 
 import { getPurchaseOwner } from 'src/utils/InvoiceUtils';
 import { IPurchase, IPurchaser } from 'src/services/app/dto/InvoiceDTO';
 import { formatCurrency } from '@brazilian-utils/brazilian-utils';
 import PurchasersList from 'src/components/PurchasersList.vue';
 
+const metaData = {
+  title: 'Controle sua Fatura',
+  titleTemplate: (title: string) =>
+    `${title} - MePaga | Organize as Faturas de Seus Cartões`,
+
+  // meta tags
+  meta: {
+    description: {
+      name: 'description',
+      content: 'Importe a fatura do seu cartão em PDF e organize por compra.',
+    },
+    keywords: {
+      name: 'keywords',
+      content: 'fatura,cartão,pdf,importar fatura,dividir compras,compras,',
+    },
+    equiv: {
+      'http-equiv': 'Content-Type',
+      content: 'text/html; charset=UTF-8',
+    },
+    // note: for Open Graph type metadata you will need to use SSR, to ensure page is rendered by the server
+    ogTitle: {
+      property: 'og:title',
+      // optional; similar to titleTemplate, but allows templating with other meta properties
+      template(ogTitle: string) {
+        return `${ogTitle} - MePaga | Organize as Faturas de Seus Cartões`;
+      },
+    },
+  },
+};
 export default defineComponent({
   components: {
     LoadingTableSkeleton,
@@ -209,6 +238,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
+    useMeta(metaData);
 
     const invoiceId = computed(() => router.currentRoute.value.params.id);
     const currentInvoice = computed(() => store.state.invoices?.currentInvoice);
