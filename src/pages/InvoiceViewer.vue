@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pt-xl q-px-md-md q-px-xs-sm mp-ubuntu">
+  <div class="q-pt-md-xl q-pt-xs-sm q-px-md-md q-px-xs-sm mp-ubuntu">
     <div
       class="column-xs row-md q-gutter-xs-x-none q-gutter-xs-y-md q-gutter-y-xl q-gutter-md-x-md"
     >
@@ -192,14 +192,7 @@ import { useStore } from 'src/store';
 import { useRouter } from 'vue-router';
 import { defineComponent, computed, ref } from 'vue';
 import LoadingTableSkeleton from 'src/components/LoadingTableSkeleton.vue';
-import {
-  date,
-  QDialog,
-  QDialogOptions,
-  QDialogProps,
-  QDialogSlots,
-  useQuasar,
-} from 'quasar';
+import { date, QDialog, useQuasar } from 'quasar';
 
 import { getPurchaseOwner } from 'src/utils/InvoiceUtils';
 import { IPurchase, IPurchaser } from 'src/services/app/dto/InvoiceDTO';
