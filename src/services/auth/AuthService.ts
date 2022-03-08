@@ -30,8 +30,6 @@ export class AuthService implements IAuthService {
       `${process.env.API_URL}api/auth/google/callback?access_token=${access_token}`
     );
 
-    console.log(response);
-
     if (response.status !== 200) throw new Error(response.statusText);
     const authResponse = response.data as AuthResponseDTO;
 

@@ -1,7 +1,7 @@
 <template>
   <q-card
     class="q-px-md q-pt-none col-xs col"
-    style="min-width: 180px; max-width: 220px"
+    :style="`min-width: 180px; ${$q.screen.gt.xs ? 'max-width: 220px' : ''}`"
   >
     <div class="column q-gutter-y-sm no-wrap">
       <q-select
