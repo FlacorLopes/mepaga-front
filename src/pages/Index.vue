@@ -16,7 +16,9 @@
         :options="bankList"
         label="Selecione o Banco"
         class="absolute-center"
-        :style="`z-index: 999; ${$q.screen.lt.md ? 'width: 50%' : '30%'}`"
+        :style="`z-index: 999; ${
+          $q.screen.lt.md ? 'width: 50%' : 'width: 30%'
+        }`"
         :disable="selectedBank !== null || !auth.isLoggedIn"
         @update:model-value="onBankSelected"
       >
