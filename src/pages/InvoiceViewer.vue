@@ -1,7 +1,7 @@
 <template>
   <div class="q-pt-xl q-px-md-md q-px-xs-sm mp-ubuntu">
     <div
-      class="column-xs row-md q-gutter-xs-x-none q-gutter-y-xl q-gutter-md-x-md"
+      class="column-xs row-md q-gutter-xs-x-none q-gutter-xs-y-md q-gutter-y-xl q-gutter-md-x-md"
     >
       <loading-table-skeleton v-if="loading || !currentInvoice" />
       <q-card class="mp-card col-sm-7 col-xs-12" v-else>
@@ -93,7 +93,7 @@
                     class="cursor-pointer"
                     v-ripple
                   >
-                    <q-menu auto-close>
+                    <q-menu auto-close :class="{ 'z-max': $q.screen.lt.md }">
                       <q-list style="min-width: 100px">
                         <q-item clickable @click="isDividing = true">
                           <q-item-section avatar>
@@ -144,55 +144,46 @@
           </div>
         </q-card-section>
       </q-card>
-      <q-card class="mp-card col" v-if="!loading && currentInvoice">
-        <q-card-section :class="{ blured: isSelecting }">
-          <div class="text-mp-blue-1 text-subtitle1 text-weight-medium">
-            Usuários de seu cartão nessa fatura
-          </div>
-          <div class="text-mp-blue-1 text-subtitle2 text-weight-light">
-            clique em um card de comprador para atribuir a compra a ele
-          </div>
-        </q-card-section>
-        <q-card-section class="q-gutter-y-md">
-          <div>
-            <div class="row q-gutter-md">
-              <add-purchaser-card />
-              <purchaser-card
-                useUserStyle
-                :value="userPurchasesValue.toFixed(2)"
-                :purchaseAmount="userPurchases?.length || 0"
-                :badgeNumber="getDividingPurchaseNumber(userPurchaser)"
-                :class="{ 'cursor-pointer': isSelecting }"
-                @click="handlePurchaserClick(userPurchaser)"
-              />
-            </div>
-          </div>
-          <q-scroll-area style="height: 240px" class="q-pb-xs">
-            <div class="row q-gutter-md">
-              <purchaser-card
-                v-for="purchaser in purchasersList"
-                :key="purchaser.name"
-                :name="purchaser.name"
-                :value="getPurchasesValue(purchaser).toFixed(2)"
-                :purchaseAmount="getPurchasesAmount(purchaser)"
-                :class="{ 'cursor-pointer': isSelecting }"
-                :badgeNumber="getDividingPurchaseNumber(purchaser)"
-                @click="handlePurchaserClick(purchaser)"
-              />
-            </div>
-          </q-scroll-area>
-          <div class="row" v-show="isDividing">
-            <q-btn
-              label="Finalizar Divisão"
-              color="positive"
-              class="col"
-              :disable="dividingPurchasers.length === 0"
-              @click="handleDivisionFinish"
-            />
-          </div>
-        </q-card-section>
-      </q-card>
+
+      <purchasers-list
+        v-if="!showMobilePurchasers && !loading && currentInvoice"
+        :isSelecting="isSelecting"
+        :isDividing="isDividing"
+        :dividingPurchasers="dividingPurchasers"
+        :purchasersList="purchasersList"
+        :userPurchases="userPurchases"
+        :userPurchaser="userPurchaser"
+        :userPurchasesValue="userPurchasesValue.toFixed(2)"
+        :getDividingPurchaseNumber="getDividingPurchaseNumber"
+        :getPurchasesAmountFromPurchaser="getPurchasesAmount"
+        :getPurchasesValueFromPurchaser="getPurchasesValue"
+        @finish-division="handleDivisionFinish"
+        @purchaser-click="handlePurchaserClick"
+      />
     </div>
+    <q-dialog
+      v-model="showMobilePurchasers"
+      transition-duration="500"
+      full-height
+      ref="modal"
+    >
+      <purchasers-list
+        v-if="!loading && currentInvoice"
+        :isSelecting="isSelecting"
+        :isDividing="isDividing"
+        :dividingPurchasers="dividingPurchasers"
+        :purchasersList="purchasersList"
+        :userPurchases="userPurchases"
+        :userPurchaser="userPurchaser"
+        :userPurchasesValue="userPurchasesValue.toFixed(2)"
+        :getDividingPurchaseNumber="getDividingPurchaseNumber"
+        :getPurchasesAmountFromPurchaser="getPurchasesAmount"
+        :getPurchasesValueFromPurchaser="getPurchasesValue"
+        @finish-division="handleDivisionFinish"
+        @purchaser-click="handlePurchaserClick"
+        @cancel="hideModal"
+      />
+    </q-dialog>
   </div>
 </template>
 
@@ -201,15 +192,26 @@ import { useStore } from 'src/store';
 import { useRouter } from 'vue-router';
 import { defineComponent, computed, ref } from 'vue';
 import LoadingTableSkeleton from 'src/components/LoadingTableSkeleton.vue';
-import { date } from 'quasar';
-import PurchaserCard from 'src/components/PurchaserCard.vue';
-import AddPurchaserCard from 'src/components/AddPurchaserCard.vue';
+import {
+  date,
+  QDialog,
+  QDialogOptions,
+  QDialogProps,
+  QDialogSlots,
+  useQuasar,
+} from 'quasar';
+
 import { getPurchaseOwner } from 'src/utils/InvoiceUtils';
 import { IPurchase, IPurchaser } from 'src/services/app/dto/InvoiceDTO';
 import { formatCurrency } from '@brazilian-utils/brazilian-utils';
+import PurchasersList from 'src/components/PurchasersList.vue';
 
 export default defineComponent({
-  components: { LoadingTableSkeleton, PurchaserCard, AddPurchaserCard },
+  components: {
+    LoadingTableSkeleton,
+
+    PurchasersList,
+  },
   name: 'InvoiceViewer',
   setup() {
     const store = useStore();
@@ -272,6 +274,10 @@ export default defineComponent({
       return '';
     });
 
+    const $q = useQuasar();
+    const showMobilePurchasers = computed(
+      () => $q.screen.lt.md && (isSelecting.value || isDividing.value)
+    );
     if (invoiceId.value)
       store
         .dispatch('invoices/loadInvoice', invoiceId.value)
@@ -300,6 +306,7 @@ export default defineComponent({
       selectedPurchaseId,
       isDividing,
       dividingPurchasers,
+      showMobilePurchasers,
       getPurchaseOwner,
       getDividedPrice,
       formatCurrency,
@@ -327,8 +334,12 @@ export default defineComponent({
         purchaseId: <number>this.selectedPurchaseId,
       });
 
-      this.isSelecting = false;
-      this.selectedPurchaseId = undefined;
+      if (this.showMobilePurchasers) {
+        setTimeout(() => {
+          this.isSelecting = false;
+          this.selectedPurchaseId = undefined;
+        }, 500);
+      }
     },
     async handlePurchaserClick(purchaser: IPurchaser) {
       if (!this.isSelecting) return;
@@ -358,6 +369,7 @@ export default defineComponent({
       await this.requestAddPurchaser(this.dividingPurchasers.map((p) => p.id));
 
       this.isDividing = false;
+      this.isSelecting = false;
       this.dividingPurchasers = [];
     },
 
@@ -400,6 +412,13 @@ export default defineComponent({
       );
 
       return index + 1;
+    },
+    hideModal() {
+      this.isSelecting = false;
+      this.isDividing = false;
+      this.dividingPurchasers = [];
+
+      (this.$refs.modal as QDialog).hide();
     },
   },
 });

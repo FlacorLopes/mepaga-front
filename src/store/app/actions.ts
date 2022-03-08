@@ -18,7 +18,6 @@ const actions: ActionTree<AppStateInterface, StateInterface> = {
 
     invoices.forEach((i) => {
       // p.attributes.date = date.formatDate(p.attributes.date, 'DD MM YYYY');
-      console.log(i);
       (i as unknown as ResponseObject<IInvoice>).attributes.dueDate =
         date.formatDate(
           (i as unknown as ResponseObject<IInvoice>).attributes.dueDate,
@@ -55,7 +54,6 @@ const actions: ActionTree<AppStateInterface, StateInterface> = {
 
   async addPurchaser({ commit, state }, name: string) {
     const purchaser = await invoiceService.createPurchaser(name);
-    console.log(purchaser);
     commit('setPurchasers', [...state.purchasers, purchaser]);
     commit('setUserPurchasersList', [...state.userPurchaserList, purchaser]);
   },

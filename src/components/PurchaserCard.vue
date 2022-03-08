@@ -1,5 +1,8 @@
 <template>
-  <q-card class="q-pa-md col-xs" :style="'min-width: 180px; max-width: 220px'">
+  <q-card
+    class="q-pa-md col-xs"
+    :style="`min-width: 180px; ${$q.screen.gt.xs ? 'max-width: 220px' : ''}`"
+  >
     <q-spinner
       color="primary"
       size="md"
