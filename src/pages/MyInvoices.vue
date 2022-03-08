@@ -71,7 +71,37 @@ import { useRouter } from 'vue-router';
 import { ResponseObject } from 'src/services/StrapiResponseWrapper';
 import { IInvoice } from 'src/services/app/dto/InvoiceDTO';
 import { formatCurrency } from '@brazilian-utils/brazilian-utils';
+import { useMeta } from 'quasar';
 
+const metaData = {
+  title: 'Minhas Faturas',
+  titleTemplate: (title: string) =>
+    `${title} - MePaga | Organize as Faturas de Seus Cartões`,
+
+  // meta tags
+  meta: {
+    description: {
+      name: 'description',
+      content: 'Importe a fatura do seu cartão em PDF e organize por compra.',
+    },
+    keywords: {
+      name: 'keywords',
+      content: 'fatura,cartão,pdf,importar fatura,dividir compras,compras,',
+    },
+    equiv: {
+      'http-equiv': 'Content-Type',
+      content: 'text/html; charset=UTF-8',
+    },
+    // note: for Open Graph type metadata you will need to use SSR, to ensure page is rendered by the server
+    ogTitle: {
+      property: 'og:title',
+      // optional; similar to titleTemplate, but allows templating with other meta properties
+      template(ogTitle: string) {
+        return `${ogTitle} - MePaga | Organize as Faturas de Seus Cartões`;
+      },
+    },
+  },
+};
 const columns = [
   {
     name: 'date',
@@ -93,6 +123,7 @@ export default {
     const store = useStore();
     const invoices = computed(() => store.state.invoices);
     const router = useRouter();
+    useMeta(metaData);
 
     store.dispatch('invoices/load').catch((reason) => alert(reason));
 
