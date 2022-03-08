@@ -362,6 +362,9 @@ export default defineComponent({
           this.isSelecting = false;
           this.selectedPurchaseId = undefined;
         }, 500);
+      } else {
+        this.isSelecting = false;
+        this.selectedPurchaseId = undefined;
       }
     },
     async handlePurchaserClick(purchaser: IPurchaser) {
