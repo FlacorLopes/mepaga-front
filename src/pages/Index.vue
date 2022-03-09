@@ -79,7 +79,7 @@ interface QUploadInfo {
 const metaData = {
   title: 'Importe uma Fatura',
   titleTemplate: (title: string) =>
-    `${title} - MePaga | Organize as Faturas de Seus Cartões`,
+    `${title} - MePaga | O lugar certo para organizar suas faturas`,
 
   // meta tags
   meta: {
@@ -100,7 +100,7 @@ const metaData = {
       property: 'og:title',
       // optional; similar to titleTemplate, but allows templating with other meta properties
       template(ogTitle: string) {
-        return `${ogTitle} - MePaga | Organize as Faturas de Seus Cartões`;
+        return `${ogTitle} - MePaga | O lugar certo para organizar suas faturas`;
       },
     },
   },
