@@ -4,7 +4,7 @@
       <div class="text-h5 text-weight-bold text-primary">Bem Vindo(a)!</div>
 
       <div style="max-width: 450px">
-        O MePaga te ajuda as organizar a faturas do seu cartão. Para começar,
+        O MePaga te ajuda ar organizar as faturas do seu cartão. Para começar,
         importe uma fatura.
       </div>
     </div>
