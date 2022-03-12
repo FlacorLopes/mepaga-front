@@ -1,11 +1,36 @@
 <template>
-  <div class="q-pt-xl q-px-md q-gutter-y-xl mp-ubuntu">
+  <div class="q-pt-lg q-px-md q-gutter-y-xl mp-ubuntu">
     <div class="q-gutter-md">
-      <div class="text-h5 text-weight-bold text-primary">Bem Vindo(a)!</div>
+      <div class="row-md column-xs justify-between q-gutter-xs-y-md">
+        <div class="q-gutter-y-md text-primary">
+          <div class="text-h5 text-weight-bold">Bem Vindo(a)!</div>
 
-      <div style="max-width: 450px">
-        O MePaga te ajuda ar organizar as faturas do seu cartão. Para começar,
-        importe uma fatura.
+          <div
+            style="max-width: 450px"
+            :class="$q.screen.gt.xs ? 'text-body1' : 'text-body2'"
+          >
+            O MePaga te ajuda ar organizar as faturas do seu cartão. Para
+            começar, importe uma fatura.
+          </div>
+        </div>
+
+        <div class="rounded-borders bg-indigo-1" style="max-width: 400px">
+          <div class="row no-wrap q-pa-sm q-gutter-x-md">
+            <img
+              src="images/flowers.svg"
+              :style="`width: ${$q.screen.gt.xs ? '140px' : '100px'}`"
+            />
+            <div>
+              <div class="text-subtitle1 text-weight-medium text-primary">
+                Privacidade!
+              </div>
+              <div class="text-caption text-primary">
+                As Faturas que você envia têm a descrição criptografada com sua
+                Chave MePaga. Nós não temos acesso a elas.
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
