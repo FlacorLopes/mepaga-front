@@ -10,22 +10,41 @@
     </div>
 
     <div class="col column items-center relative-position">
-      <q-select
+      <div
         v-if="auth.isLoggedIn"
-        v-model="selectedBank"
-        :options="bankList"
-        label="Selecione o Banco"
-        class="absolute-center"
         :style="`z-index: 999; ${
-          $q.screen.lt.md ? 'width: 50%' : 'width: 30%'
+          $q.screen.lt.md ? 'width: 80%' : 'width: 30%'
         }`"
-        :disable="selectedBank !== null || !auth.isLoggedIn"
-        @update:model-value="onBankSelected"
+        class="column absolute-center q-gutter-y-md"
       >
-        <template v-slot:append>
-          <q-icon name="credit_card" color="primary" />
-        </template>
-      </q-select>
+        <q-input
+          ref="key"
+          filled
+          type="password"
+          bg-color="positive"
+          label="Insira sua Chave MePaga"
+          v-model="mepagaSecret"
+          @update:modelValue="saveSecret"
+          name="chave_mepaga"
+        >
+          <template v-slot:prepend>
+            <q-icon name="vpn_key" color="primary" />
+          </template>
+        </q-input>
+        <q-select
+          v-model="selectedBank"
+          :options="bankList"
+          label="Selecione o Banco"
+          class="col"
+          :disable="selectedBank !== null || !auth.isLoggedIn || !mepagaSecret"
+          @update:model-value="onBankSelected"
+        >
+          <template v-slot:append>
+            <q-icon name="credit_card" color="primary" />
+          </template>
+        </q-select>
+      </div>
+
       <q-btn
         v-if="!auth.isLoggedIn"
         push
@@ -51,13 +70,53 @@
             value: `Bearer ${auth.token?.access_token}`,
           },
         ]"
+        :form-fields="[
+          {
+            name: 'MePaga-Secret',
+            value: mepagaSecret,
+          },
+        ]"
         auto-upload
         @uploaded="onUploadFinish"
         @failed="onFailed"
         :disable="selectedBank === null || !auth.isLoggedIn"
-        ref="uploader"
+        ref="uploaderRef"
         flat
       >
+        <template v-slot:header="scope">
+          <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
+            <q-spinner v-if="scope.isUploading" class="q-uploader__spinner" />
+            <div class="col">
+              <div class="q-uploader__title">Envio de Fatura</div>
+              <div class="q-uploader__subtitle">
+                {{ scope.uploadSizeLabel }} / {{ scope.uploadProgressLabel }}
+              </div>
+            </div>
+            <q-btn
+              v-if="scope.canAddFiles"
+              type="a"
+              icon="add_box"
+              @click="scope.pickFiles"
+              round
+              dense
+              flat
+              id="trigger"
+            >
+              <q-uploader-add-trigger />
+              <q-tooltip>Selecione a Fatura</q-tooltip>
+            </q-btn>
+            <q-btn
+              v-if="scope.canUpload"
+              icon="cloud_upload"
+              @click="scope.upload"
+              round
+              dense
+              flat
+            >
+              <q-tooltip>Enviar a Fatura</q-tooltip>
+            </q-btn>
+          </div>
+        </template>
       </q-uploader>
     </div>
   </div>
@@ -66,8 +125,9 @@
 <script lang="ts">
 import { QUploader, useMeta, useQuasar } from 'quasar';
 import { IInvoice } from 'src/services/app/dto/InvoiceDTO';
+import { AuthService } from 'src/services/auth/AuthService';
 import { useStore } from 'src/store';
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 
 interface QUploadInfo {
@@ -115,6 +175,9 @@ export default defineComponent({
     const bankList = ref<string[]>(['Nubank']);
     const $q = useQuasar();
     const uploaderRef = ref<InstanceType<typeof QUploader>>();
+    const hasFileBeenAdded = ref(false);
+    const mepagaSecret = ref<string>($q.cookies.get('mepaga_secret'));
+
     useMeta(metaData);
 
     const onUploadFinish = async (info: QUploadInfo) => {
@@ -137,20 +200,30 @@ export default defineComponent({
       });
     };
 
-    const onBankSelected = () => {
-      // uploaderRef.value.
-    };
     return {
       auth,
       selectedBank,
       bankList,
       uploaderRef,
+      hasFileBeenAdded,
+      mepagaSecret,
       googleAuth: process.env.GOOGLE_AUTH,
       API_URL: process.env.API_URL,
+      $q,
       onUploadFinish,
       onFailed,
-      onBankSelected,
     };
+  },
+  methods: {
+    async onBankSelected() {
+      // necessary to get the element by id
+      await nextTick();
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      (document.querySelector('#trigger') as HTMLElement).click();
+    },
+    saveSecret() {
+      new AuthService().setSecretCookie(this.mepagaSecret);
+    },
   },
 });
 </script>

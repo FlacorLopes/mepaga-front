@@ -184,6 +184,32 @@
         @cancel="hideModal"
       />
     </q-dialog>
+    <q-dialog v-model="askSecret" persistent>
+      <q-card style="min-width: 350px">
+        <q-card-section>
+          <div class="text-h6">Informe sua Chave MePaga</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input
+            dense
+            v-model="secret"
+            type="password"
+            name="chave_mepaga"
+            autofocus
+          >
+            <template v-slot:prepend>
+              <q-icon name="vpn_key" color="primary" />
+            </template>
+          </q-input>
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancelar" v-close-popup />
+          <q-btn flat label="Confirmar" v-close-popup @click="setSecret" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -198,6 +224,9 @@ import { getPurchaseOwner } from 'src/utils/InvoiceUtils';
 import { IPurchase, IPurchaser } from 'src/services/app/dto/InvoiceDTO';
 import { formatCurrency } from '@brazilian-utils/brazilian-utils';
 import PurchasersList from 'src/components/PurchasersList.vue';
+import { AuthService } from 'src/services/auth/AuthService';
+
+const authService = new AuthService();
 
 const metaData = {
   title: 'Controle sua Fatura',
@@ -239,6 +268,11 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     useMeta(metaData);
+
+    const $q = useQuasar();
+
+    const secret = ref($q.cookies.get('mepaga_secret'));
+    const askSecret = ref(false);
 
     const invoiceId = computed(() => router.currentRoute.value.params.id);
     const currentInvoice = computed(() => store.state.invoices?.currentInvoice);
@@ -297,17 +331,42 @@ export default defineComponent({
       return '';
     });
 
-    const $q = useQuasar();
     const showMobilePurchasers = computed(
       () => $q.screen.lt.md && (isSelecting.value || isDividing.value)
     );
-    if (invoiceId.value)
-      store
-        .dispatch('invoices/loadInvoice', invoiceId.value)
-        .then(() => (loading.value = false))
-        .catch((error) =>
-          console.log('Ocorreu um erro ao carregar a fatura', error)
-        );
+    if (invoiceId.value) {
+      if (!secret.value) {
+        askSecret.value = true;
+        $q.notify({
+          type: 'warning',
+          message: 'Ops! Sua Chave MePaga não foi detectada',
+        });
+      } else {
+        store
+          .dispatch('invoices/loadInvoice', {
+            id: invoiceId.value,
+            secret: secret.value,
+          })
+          .then(() => {
+            loading.value = false;
+            $q.notify({
+              type: 'positive',
+              message: 'Fatura descriptografada com sua Chave MePaga ✨',
+              textColor: 'primary',
+              multiLine: true,
+              timeout: 3000,
+            });
+          })
+          .catch((error) => {
+            console.log('Ocorreu um erro ao carregar a fatura', error);
+            $q.notify({
+              type: 'warning',
+              message: 'Ops! Sua Chave MePaga não foi detectada',
+              timeout: 5000,
+            });
+          });
+      }
+    }
 
     const getDividedPrice = (purchase: IPurchase): number => {
       // divides purchase value by all our purchasers
@@ -315,7 +374,15 @@ export default defineComponent({
         return purchase.price / purchase.purchasers.data.length;
       return purchase.price;
     };
+
+    const setSecret = () => {
+      authService.setSecretCookie(secret.value);
+      window.location.reload();
+    };
+
     return {
+      secret,
+      askSecret,
       currentInvoice,
       invoiceId,
       dueDate,
@@ -330,6 +397,8 @@ export default defineComponent({
       isDividing,
       dividingPurchasers,
       showMobilePurchasers,
+      authService,
+      setSecret,
       getPurchaseOwner,
       getDividedPrice,
       formatCurrency,

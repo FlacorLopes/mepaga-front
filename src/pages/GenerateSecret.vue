@@ -24,10 +24,12 @@
           Nós não temos acesso à descrição de suas compras, e essa chave é usada
           para criptografá-las.<br />
           Não se preocupe. Isso só é necessário uma vez. Apenas mantenha sua
-          chave em um local seguro. <br />
+          chave salva no email ou outro local seguro. <br />
           <br />
           <ins>Essa não é sua senha de acesso.</ins> Ela será usada para exibir
-          detalhes sensíveis de suas faturas.
+          detalhes sensíveis de suas faturas. <br /><br />
+          Para facilitar, ela ficará salva neste navegador até você sair do
+          MePaga.
         </div>
         <div :class="{ 'q-mt-xl': $q.screen.gt.sm }">
           <q-form @submit.prevent="handleSumbit">
@@ -83,10 +85,6 @@
                 label="Confirmo a geração de minha chave de segurança"
                 v-model="check"
               />
-              <q-toggle
-                label="Salvar minha chave neste navegador."
-                v-model="save"
-              />
             </div>
           </q-form>
         </div>
@@ -115,6 +113,7 @@ export default defineComponent({
     const handleSumbit = async () => {
       try {
         await authService.confirmSecretGeneration(secretData.value.secret);
+        authService.setSecretCookie(secretData.value.secret);
         await router.push('/');
       } catch (error) {
         $q.notify({

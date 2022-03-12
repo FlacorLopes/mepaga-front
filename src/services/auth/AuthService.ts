@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios';
 import { api } from 'src/boot/axios';
 import { AuthRequestDTO, AuthResponseDTO } from 'src/services/auth/dto/AuthDTO';
-import { LocalStorage } from 'quasar';
+import { LocalStorage, Cookies } from 'quasar';
 
 export interface IAuthService {
   login(params: AuthRequestDTO): Promise<AuthResponseDTO>;
@@ -70,10 +70,19 @@ export class AuthService implements IAuthService {
 
     if (response.status !== 200) throw new Error(response.statusText);
   }
-
+  setSecretCookie(secret: string) {
+    Cookies.set('mepaga_secret', secret, {
+      expires: 30,
+      sameSite: 'Strict',
+      path: '/',
+    });
+  }
   logout() {
     (this.api.defaults.headers as { Authorization: string })['Authorization'] =
       null;
     LocalStorage.remove('authentication');
+    Cookies.remove('mepaga_secret', {
+      path: '/',
+    });
   }
 }
