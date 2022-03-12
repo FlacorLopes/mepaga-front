@@ -25,6 +25,8 @@ export default defineComponent({
         .googleLogin(<string>access_token.value)
         .then((response) => {
           store.commit('authentication/setLoggedIn', response);
+          if (!response.user.hasGeneratedSecret)
+            return void router.push({ name: 'GenerateSecret' });
           void router.push('/');
         });
     }

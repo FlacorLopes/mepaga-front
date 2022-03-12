@@ -53,7 +53,7 @@ module.exports = configure(function (ctx) {
       env: {
         API_URL: ctx.dev ? 'http://localhost:1337/' : 'https://api.mepaga.net/',
         GOOGLE_AUTH: ctx.dev
-          ? 'https://api.mepaga.net/api/connect/google/'
+          ? 'http://localhost:1337/api/connect/google/'
           : 'https://api.mepaga.net/api/connect/google/',
       },
       // transpile: false,
@@ -104,7 +104,7 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['LocalStorage', 'Notify'],
+      plugins: ['LocalStorage', 'Notify', 'Loading'],
       cssAddon: true,
     },
 
