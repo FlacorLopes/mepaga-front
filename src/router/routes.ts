@@ -20,6 +20,11 @@ const routes: RouteRecordRaw[] = [
         path: 'fatura/:id',
         component: () => import('pages/InvoiceViewer.vue'),
       },
+      {
+        name: 'GenerateSecret',
+        path: 'gerar-chave/',
+        component: () => import('pages/GenerateSecret.vue'),
+      },
     ],
   },
   {

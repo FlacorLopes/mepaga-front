@@ -38,7 +38,7 @@
       </q-scroll-area>
 
       <div>
-        <div class="row" v-if="$q.screen.lt.md">
+        <div class="row" v-if="$q.screen.lt.md && (isDividing || isSelecting)">
           <q-btn
             class="col"
             push

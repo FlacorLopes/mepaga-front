@@ -27,9 +27,9 @@ const actions: ActionTree<AppStateInterface, StateInterface> = {
     commit('setInvoices', invoices);
   },
 
-  async loadInvoice({ commit }, id: string) {
+  async loadInvoice({ commit }, params: { id: string; secret: string }) {
     commit('setLoading', true);
-    const invoice = await invoiceService.getInvoice(id);
+    const invoice = await invoiceService.getInvoice(params.id, params.secret);
     await this.dispatch('invoices/loadUserPurchasersList');
 
     const purchasersFound: IPurchaser[] = [];

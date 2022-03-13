@@ -6,7 +6,10 @@
       class="text-white mp-header mp-ubuntu q-px-sm-sm q-px-md-xl q-py-xs"
     >
       <q-toolbar>
-        <q-toolbar-title class="mp-logo-title">
+        <q-toolbar-title
+          class="mp-logo-title cursor-pointer"
+          @click="$router.push('/')"
+        >
           MePaga
           <sup style="font-size: 12px">beta</sup>
         </q-toolbar-title>

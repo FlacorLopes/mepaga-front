@@ -1,6 +1,6 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
-import { LocalStorage } from 'quasar';
+import { Cookies, LocalStorage } from 'quasar';
 import { AuthResponseDTO } from 'src/services/auth/dto/AuthDTO';
 
 declare module '@vue/runtime-core' {
@@ -42,6 +42,10 @@ export default boot(({ app, store }) => {
     if (authStorage?.user) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       api.defaults.headers['Authorization'] = 'Bearer ' + authStorage.jwt;
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      (api.defaults.headers['mepaga-secret'] as { 'mepaga-secret': string }) =
+        Cookies.get('mepaga_secret');
     }
     return config;
   });

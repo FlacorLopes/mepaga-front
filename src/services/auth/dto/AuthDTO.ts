@@ -10,6 +10,7 @@ export interface User {
   email: string;
   provider: string;
   confirmed: boolean;
+  hasGeneratedSecret: boolean;
   blocked: boolean;
   createdAt: Date;
   updatedAt: Date;

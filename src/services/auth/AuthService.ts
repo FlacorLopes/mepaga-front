@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios';
 import { api } from 'src/boot/axios';
 import { AuthRequestDTO, AuthResponseDTO } from 'src/services/auth/dto/AuthDTO';
-import { LocalStorage } from 'quasar';
+import { LocalStorage, Cookies } from 'quasar';
 
 export interface IAuthService {
   login(params: AuthRequestDTO): Promise<AuthResponseDTO>;
@@ -48,9 +48,41 @@ export class AuthService implements IAuthService {
     return response.data as AuthResponseDTO;
   }
 
+  async generateSecret(): Promise<{ secret: string; email: string }> {
+    const response = await this.api.post(
+      'api/users-permissions/generateSecret'
+    );
+
+    if (response.status !== 200) throw new Error(response.statusText);
+
+    return response.data as { secret: string; email: string };
+  }
+
+  async confirmSecretGeneration(secret: string): Promise<void> {
+    const response = await this.api.post(
+      'api/users-permissions/confirmSecretGeneration',
+      {
+        data: {
+          secret: secret,
+        },
+      }
+    );
+
+    if (response.status !== 200) throw new Error(response.statusText);
+  }
+  setSecretCookie(secret: string) {
+    Cookies.set('mepaga_secret', secret, {
+      expires: 30,
+      sameSite: 'Strict',
+      path: '/',
+    });
+  }
   logout() {
     (this.api.defaults.headers as { Authorization: string })['Authorization'] =
       null;
     LocalStorage.remove('authentication');
+    Cookies.remove('mepaga_secret', {
+      path: '/',
+    });
   }
 }

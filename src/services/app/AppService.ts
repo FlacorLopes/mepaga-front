@@ -6,7 +6,7 @@ import { StrapiCollectionResponseWrapper } from '../StrapiResponseWrapper';
 
 export interface IAppService {
   getInvoices(): Promise<IInvoice[]>;
-  getInvoice(id: string): Promise<IInvoice>;
+  getInvoice(id: string, string: string): Promise<IInvoice>;
 }
 
 export class AppService implements IAppService {
@@ -15,8 +15,12 @@ export class AppService implements IAppService {
   constructor() {
     this.api = api;
   }
-  async getInvoice(id: string): Promise<IInvoice> {
-    const response = await this.api.get(`api/invoices/${id}`);
+  async getInvoice(id: string, secret: string): Promise<IInvoice> {
+    const response = await this.api.get(`api/invoices/${id}`, {
+      headers: {
+        'mepaga-secret': secret,
+      },
+    });
 
     if (response.status !== 200) throw new Error(response.statusText);
     const invoice = response.data as StrapiSingleResponseWrapper<IInvoice>;
