@@ -298,12 +298,14 @@ export default defineComponent({
         )
       )
     );
-    const userPurchasesValue = computed(
-      () =>
-        userPurchases.value
+    const userPurchasesValue = computed(() => {
+      if (userPurchases.value.length > 0)
+        return userPurchases.value
           .map((p) => getDividedPrice(p.attributes))
-          .reduce((a, b) => a + b) || 0
-    );
+          .reduce((a, b) => a + b);
+
+      return 0;
+    });
     const purchasersList = computed(() => store.state.invoices.purchasers);
 
     const dueDate = computed(() => {

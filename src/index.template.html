@@ -68,7 +68,8 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      window.LogRocket && window.LogRocket.init('eogamr/mepaga');
+      if (!window.location.host.includes('localhost'))
+        window.LogRocket && window.LogRocket.init('eogamr/mepaga');
     </script>
   </head>
   <body>
