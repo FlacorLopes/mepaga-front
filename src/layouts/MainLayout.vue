@@ -39,6 +39,7 @@
       :width="280"
       side="right"
       bordered
+      :persistent="false"
       class="mp-drawer"
     >
       <div
@@ -173,6 +174,10 @@ export default {
     const auth = computed(() => store.state?.authentication);
     const rightDrawerOpen = ref(!auth.value.isLoggedIn ? true : false);
     const showAbout = ref(false);
+
+    router.beforeEach(() => {
+      rightDrawerOpen.value = false;
+    });
 
     const toggleRightDrawer = () => {
       rightDrawerOpen.value = !rightDrawerOpen.value;
