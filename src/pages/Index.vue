@@ -45,6 +45,7 @@
         <q-input
           ref="key"
           filled
+          autofocus
           type="password"
           bg-color="positive"
           label="Insira sua Chave MePaga"
@@ -197,7 +198,7 @@ export default defineComponent({
     const auth = computed(() => store.state?.authentication);
     const router = useRouter();
     const selectedBank = ref<string>(null);
-    const bankList = ref<string[]>(['Nubank']);
+    const bankList = ref<string[]>(['Nubank', 'Picpay']);
     const $q = useQuasar();
     const uploaderRef = ref<InstanceType<typeof QUploader>>();
     const hasFileBeenAdded = ref(false);

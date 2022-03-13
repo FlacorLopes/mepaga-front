@@ -51,7 +51,7 @@
             </q-card-section>
             <q-card-section>
               <q-img
-                src="images/banks/nubank.png"
+                :src="`images/banks/${props.row.attributes.BANK.toLowerCase()}.png`"
                 width="50px"
                 alt="logo do banco"
               />
