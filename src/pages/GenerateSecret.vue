@@ -112,8 +112,12 @@ export default defineComponent({
 
     const handleSumbit = async () => {
       try {
+        $q.loading.show({
+          spinnerColor: 'positive',
+        });
         await authService.confirmSecretGeneration(secretData.value.secret);
         authService.setSecretCookie(secretData.value.secret);
+        $q.loading.hide();
         await router.push('/');
       } catch (error) {
         $q.notify({
