@@ -15,6 +15,16 @@
         </q-toolbar-title>
 
         <div class="row q-gutter-md">
+          <!-- <q-btn
+            dense
+            flat
+            icon="newspaper"
+            text-color="positive"
+            label="Novidades"
+            :to="{ name: 'News' }"
+          >
+            <q-badge color="orange" floating>3</q-badge>
+          </q-btn> -->
           <q-avatar
             color="mp-white-0"
             text-color="primary"
@@ -105,6 +115,12 @@
             <q-icon name="credit_card" color="primary" />
           </q-item-section>
           <q-item-section> Minhas faturas </q-item-section>
+        </q-item>
+        <q-item clickable :to="{ name: 'Help' }">
+          <q-item-section avatar>
+            <q-icon name="live_help" color="primary" />
+          </q-item-section>
+          <q-item-section> Ajuda </q-item-section>
         </q-item>
         <q-item clickable @click="logout">
           <q-item-section avatar>
