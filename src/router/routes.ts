@@ -11,11 +11,11 @@ const routes: RouteRecordRaw[] = [
         name: 'Help',
         component: () => import('pages/Help.vue'),
       },
-      {
-        path: '/novidades',
-        name: 'News',
-        component: () => import('pages/News.vue'),
-      },
+      // {
+      //   path: '/novidades',
+      //   name: 'News',
+      //   component: () => import('pages/News.vue'),
+      // },
     ],
   },
   {
