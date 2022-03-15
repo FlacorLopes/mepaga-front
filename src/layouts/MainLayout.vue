@@ -15,7 +15,7 @@
         </q-toolbar-title>
 
         <div class="row q-gutter-md">
-          <!-- <q-btn
+          <q-btn
             dense
             flat
             icon="newspaper"
@@ -24,7 +24,7 @@
             :to="{ name: 'News' }"
           >
             <q-badge color="orange" floating>3</q-badge>
-          </q-btn> -->
+          </q-btn>
           <q-avatar
             color="mp-white-0"
             text-color="primary"
@@ -100,6 +100,12 @@
           </div>
 
           <div>
+            <q-item clickable :to="{ name: 'Help' }" v-if="!auth.isLoggedIn">
+              <q-item-section avatar>
+                <q-icon name="live_help" color="primary" />
+              </q-item-section>
+              <q-item-section> Ajuda </q-item-section>
+            </q-item>
             <q-item clickable @click="showAbout = true">
               <q-item-section avatar>
                 <q-icon name="help" color="primary" />
