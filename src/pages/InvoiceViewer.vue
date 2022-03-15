@@ -7,7 +7,12 @@
       <q-card class="mp-card col-sm-7 col-xs-12" v-else>
         <q-card-section :class="{ blured: isSelecting }">
           <div class="text-mp-blue-1 text-subtitle1 text-weight-medium">
-            Sua fatura de {{ dueDate }}
+            Sua fatura do
+            <span style="text-transform: captalize">{{
+              currentInvoice.BANK
+            }}</span>
+            de
+            {{ dueDate }}
           </div>
           <div class="text-mp-blue-1 text-subtitle2 text-weight-light">
             <div clss="row items-base">

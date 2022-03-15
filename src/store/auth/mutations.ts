@@ -10,6 +10,7 @@ const mutation: MutationTree<AuthStateInterface> = {
       email: payload.user.email,
       username: payload.user.username,
       displayName: payload.user.displayName,
+      hasGeneratedSecret: payload.user.hasGeneratedSecret,
     };
     state.token = {
       access_token: payload.jwt,

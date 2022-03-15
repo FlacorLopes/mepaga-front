@@ -50,7 +50,6 @@
           bg-color="positive"
           label="Insira sua Chave MePaga"
           v-model="mepagaSecret"
-          @update:modelValue="saveSecret"
           name="chave_mepaga"
         >
           <template v-slot:prepend>
@@ -206,8 +205,13 @@ export default defineComponent({
 
     useMeta(metaData);
 
+    const saveSecret = () => {
+      new AuthService().setSecretCookie(mepagaSecret.value);
+    };
+
     const onUploadFinish = async (info: QUploadInfo) => {
       const invoice = JSON.parse(info.xhr.response) as IInvoice;
+      saveSecret();
       await router.push({
         name: 'InvoiceViewer',
         params: {
@@ -218,6 +222,26 @@ export default defineComponent({
 
     const onFailed = (info: QUploadInfo) => {
       console.log(info.xhr.response);
+
+      const error = JSON.parse(info.xhr.response) as {
+        status: number;
+        error: {
+          message: string;
+        };
+      };
+
+      if (
+        error.error.message.includes('Malformed secret') ||
+        error.error.message.includes('Secret must be provided')
+      ) {
+        return $q.notify({
+          type: 'warning',
+          message:
+            'Houve um problema em sua Chave MePaga. Você a inseriu corretamente? Verifique seu email para recuperar a chave.',
+          multiLine: true,
+          timeout: 6000,
+        });
+      }
 
       $q.notify({
         type: 'warning',
@@ -238,6 +262,7 @@ export default defineComponent({
       $q,
       onUploadFinish,
       onFailed,
+      saveSecret,
     };
   },
   methods: {
@@ -246,9 +271,6 @@ export default defineComponent({
       await nextTick();
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       (document.querySelector('#trigger') as HTMLElement).click();
-    },
-    saveSecret() {
-      new AuthService().setSecretCookie(this.mepagaSecret);
     },
   },
 });

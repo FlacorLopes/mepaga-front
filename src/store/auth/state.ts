@@ -3,7 +3,10 @@ import { User } from 'src/services/auth/dto/AuthDTO';
 export interface AuthStateInterface {
   loading: boolean;
   isLoggedIn: boolean;
-  user?: Pick<User, 'username' | 'email' | 'displayName'>;
+  user?: Pick<
+    User,
+    'username' | 'email' | 'displayName' | 'hasGeneratedSecret'
+  >;
   token?: {
     access_token: string;
   };
