@@ -47,7 +47,6 @@
                 :type="isPwd ? 'password' : 'text'"
                 bg-color="positive"
                 name="secret"
-                disable
               >
                 <template v-slot:prepend>
                   <q-icon name="vpn_key" />
@@ -96,7 +95,8 @@
 <script lang="ts">
 import { useQuasar } from 'quasar';
 import { AuthService } from 'src/services/auth/AuthService';
-import { defineComponent, ref, onMounted } from 'vue';
+import { useStore } from 'src/store';
+import { defineComponent, ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 const authService = new AuthService();
 
@@ -109,6 +109,8 @@ export default defineComponent({
     });
     const $q = useQuasar();
     const router = useRouter();
+    const store = useStore();
+    const auth = computed(() => store.state?.authentication);
 
     const handleSumbit = async () => {
       try {
@@ -128,6 +130,21 @@ export default defineComponent({
       }
     };
     onMounted(async () => {
+      if (auth.value.isLoggedIn && auth.value.user.hasGeneratedSecret) {
+        $q.notify({
+          type: 'primary',
+          message:
+            'Parece que você já recebeu sua Chave MePaga. Por favor, verifique seu email',
+          timeout: 5000,
+          icon: 'email',
+          progress: true,
+          progressClass: 'bg-positive',
+          onDismiss: async () => {
+            await router.push('/');
+          },
+        });
+        return;
+      }
       $q.loading.show({
         spinnerColor: 'positive',
       });

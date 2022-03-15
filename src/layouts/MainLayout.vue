@@ -16,6 +16,7 @@
 
         <div class="row q-gutter-md">
           <q-btn
+            v-if="$q.screen.gt.sm"
             dense
             flat
             icon="newspaper"
@@ -100,6 +101,13 @@
           </div>
 
           <div>
+            <q-item clickable :to="{ name: 'News' }">
+              <q-item-section avatar>
+                <q-icon name="newspaper" color="positive" />
+              </q-item-section>
+              <q-item-section>Novidades</q-item-section>
+              <q-badge floating rounded color="positive">3</q-badge>
+            </q-item>
             <q-item clickable :to="{ name: 'Help' }" v-if="!auth.isLoggedIn">
               <q-item-section avatar>
                 <q-icon name="live_help" color="primary" />
@@ -127,6 +135,13 @@
             <q-icon name="live_help" color="primary" />
           </q-item-section>
           <q-item-section> Ajuda </q-item-section>
+        </q-item>
+        <q-item clickable :to="{ name: 'News' }">
+          <q-item-section avatar>
+            <q-icon name="newspaper" color="positive" />
+          </q-item-section>
+          <q-item-section>Novidades</q-item-section>
+          <q-badge floating rounded color="positive">3</q-badge>
         </q-item>
         <q-item clickable @click="logout">
           <q-item-section avatar>
