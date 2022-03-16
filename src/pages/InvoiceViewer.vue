@@ -164,6 +164,7 @@
         :getPurchasesValueFromPurchaser="getPurchasesValue"
         @finish-division="handleDivisionFinish"
         @purchaser-click="handlePurchaserClick"
+        @showCharger="showPurchasesCharger = true"
       />
     </div>
     <q-dialog
@@ -215,6 +216,19 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog
+      v-model="showPurchasesCharger"
+      transition-duration="500"
+      full-height
+    >
+      <purchases-charger
+        :invoice="currentInvoice"
+        :userStuff="{ user: userPurchaser, purchases: userPurchases }"
+        :purchasersList="purchasersList"
+        :purchasesList="purchasesList"
+        :getDividedPrice="getDividedPrice"
+      />
+    </q-dialog>
   </div>
 </template>
 
@@ -223,13 +237,14 @@ import { useStore } from 'src/store';
 import { useRouter } from 'vue-router';
 import { defineComponent, computed, ref } from 'vue';
 import LoadingTableSkeleton from 'src/components/LoadingTableSkeleton.vue';
-import { date, QDialog, useMeta, useQuasar } from 'quasar';
+import { QDialog, useMeta, useQuasar } from 'quasar';
 
-import { getPurchaseOwner } from 'src/utils/InvoiceUtils';
+import { getFullTextDate, getPurchaseOwner } from 'src/utils/InvoiceUtils';
 import { IPurchase, IPurchaser } from 'src/services/app/dto/InvoiceDTO';
 import { formatCurrency } from '@brazilian-utils/brazilian-utils';
 import PurchasersList from 'src/components/PurchasersList.vue';
 import { AuthService } from 'src/services/auth/AuthService';
+import PurchasesCharger from 'src/components/PurchasesCharger.vue';
 
 const authService = new AuthService();
 
@@ -267,6 +282,7 @@ export default defineComponent({
     LoadingTableSkeleton,
 
     PurchasersList,
+    PurchasesCharger,
   },
   name: 'InvoiceViewer',
   setup() {
@@ -315,25 +331,7 @@ export default defineComponent({
 
     const dueDate = computed(() => {
       if (currentInvoice.value.dueDate) {
-        let rawDate = date
-          .formatDate(currentInvoice.value.dueDate, 'DD MMMM YYYY', {
-            months: [
-              'Janeiro',
-              'Fevereiro',
-              'Março',
-              'Abril',
-              'Maio',
-              'Junho',
-              'Julho',
-              'Agosto',
-              'Setembro',
-              'Outubro',
-              'Novembro',
-              'Dezembro',
-            ],
-          })
-          .split(' ');
-        return `${rawDate[0]} de ${rawDate[1]} de ${rawDate[2]}`;
+        return getFullTextDate(currentInvoice.value.dueDate);
       }
       return '';
     });
@@ -341,6 +339,8 @@ export default defineComponent({
     const showMobilePurchasers = computed(
       () => $q.screen.lt.md && (isSelecting.value || isDividing.value)
     );
+    const showPurchasesCharger = ref(false);
+
     if (invoiceId.value) {
       if (!secret.value) {
         askSecret.value = true;
@@ -404,6 +404,7 @@ export default defineComponent({
       isDividing,
       dividingPurchasers,
       showMobilePurchasers,
+      showPurchasesCharger,
       authService,
       setSecret,
       getPurchaseOwner,
