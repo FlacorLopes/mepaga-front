@@ -222,8 +222,9 @@
       full-height
     >
       <purchases-charger
+        v-if="showPurchasesCharger"
         :invoice="currentInvoice"
-        :userStuff="{ user: userPurchaser, purchases: userPurchases }"
+        :userStuff="userStuff"
         :purchasersList="purchasersList"
         :purchasesList="purchasesList"
         :getDividedPrice="getDividedPrice"
@@ -387,6 +388,11 @@ export default defineComponent({
       window.location.reload();
     };
 
+    const userStuff = computed(() => ({
+      user: userPurchaser.value,
+      purchases: userPurchases.value,
+    }));
+
     return {
       secret,
       askSecret,
@@ -397,6 +403,7 @@ export default defineComponent({
       userPurchases,
       userPurchasesValue,
       userPurchaser,
+      userStuff,
       purchasersList,
       loading,
       isSelecting,

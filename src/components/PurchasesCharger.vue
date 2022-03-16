@@ -40,10 +40,15 @@
               <q-checkbox v-model="exportList[index]" />
             </q-item-section>
             <q-item-section side v-if="$q.screen.gt.xs">
-              <q-icon name="face" color="primary" />
+              <q-icon
+                name="face"
+                :color="purchaser.representsUser ? 'positive' : 'primary'"
+              />
             </q-item-section>
 
-            <q-item-section> {{ purchaser.name }} </q-item-section>
+            <q-item-section>
+              {{ purchaser.representsUser ? 'Você' : purchaser.name }}
+            </q-item-section>
 
             <q-item-section side>
               <q-chip
@@ -128,7 +133,12 @@ export default defineComponent({
       type: Object as PropType<IInvoice>,
       required: true,
     },
-
+    userStuff: {
+      type: Object as PropType<{
+        purchases: ResponseObject<IPurchase>[];
+        user: IPurchaser;
+      }>,
+    },
     purchasesList: {
       type: Array as PropType<ResponseObject<IPurchase>[]>,
       required: true,
@@ -146,8 +156,8 @@ export default defineComponent({
     const purchasers = computed(() => {
       // unique set of purchaser along with it's purchases
       const listSet = new Set([
-        ...props.purchasersList.map((p) => {
-          const purchases = props.purchasesList.filter((purchase) =>
+        ...[props.userStuff.user, ...props.purchasersList].map((p) => {
+          const purchases = [...props.purchasesList].filter((purchase) =>
             purchase.attributes.purchasers.data
               .map((innerPurchaser) => innerPurchaser.id)
               .includes(p.id)
