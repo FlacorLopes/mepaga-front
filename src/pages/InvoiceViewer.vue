@@ -41,6 +41,8 @@
                   : ''
               "
             >
+              <q-resize-observer @resize="onResize" />
+
               <div class="column-xs row-sm q-px-lg q-py-sm no-wrap">
                 <div
                   class="column q-gutter-x-md text-weight-regular text-mp-white-0"
@@ -442,6 +444,10 @@ export default defineComponent({
       return sliced;
     });
 
+    const onResize = (size: { height: number }) => {
+      purchaseRowElementHeight.value = size.height;
+    };
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const scrollHandler = (params: {
       position: { top: number };
@@ -463,7 +469,10 @@ export default defineComponent({
 
       // console.log(rowsToDisplay);
 
-      console.log(scrollArea.value.getScrollPercentage().top);
+      console.log(
+        scrollArea.value.getScrollPercentage().top,
+        purchaseRowElementHeight.value
+      );
 
       if (params.directionChanged) return;
 
@@ -472,12 +481,15 @@ export default defineComponent({
         scrollArea.value.getScrollPercentage().top >= 0.65
       ) {
         if (scrollArea.value.getScrollPercentage().top >= 0.9) {
-          const timer = setInterval(() => {
+          const timer = setTimeout(() => {
             console.log('timeDown');
-            if (scrollArea.value.getScrollPercentage().top >= 0.9) {
+            if (
+              scrollArea.value.getScrollPercentage().top >= 0.9 &&
+              scroll.end + rowsToDisplay < purchasesList.value.length
+            ) {
               console.log('interval');
               scrollArea.value.setScrollPercentage('vertical', 0.5);
-              clearInterval(timer);
+              clearTimeout(timer);
             }
           }, 500);
         }
@@ -498,12 +510,15 @@ export default defineComponent({
         scrollArea.value.getScrollPercentage().top <= 0.65
       ) {
         if (scrollArea.value.getScrollPercentage().top <= 0.1) {
-          const timer = setInterval(() => {
+          const timer = setTimeout(() => {
             console.log('timeDown');
-            if (scrollArea.value.getScrollPercentage().top <= 0.1) {
+            if (
+              scrollArea.value.getScrollPercentage().top <= 0.1 &&
+              scroll.start - rowsToDisplay > 0
+            ) {
               console.log('interval');
               scrollArea.value.setScrollPercentage('vertical', 0.5);
-              clearInterval(timer);
+              clearTimeout(timer);
             }
           }, 500);
         }
@@ -547,6 +562,7 @@ export default defineComponent({
       scrollArea,
       purchaseRowElementHeight,
       scrollHandler,
+      onResize,
       setSecret,
       getPurchaseOwner,
       getDividedPrice,
