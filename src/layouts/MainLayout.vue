@@ -24,7 +24,7 @@
             label="Novidades"
             :to="{ name: 'News' }"
           >
-            <q-badge color="orange" floating>3</q-badge>
+            <q-badge color="orange" floating>4</q-badge>
           </q-btn>
           <q-avatar
             color="mp-white-0"
@@ -106,7 +106,7 @@
                 <q-icon name="newspaper" color="positive" />
               </q-item-section>
               <q-item-section>Novidades</q-item-section>
-              <q-badge floating rounded color="positive">3</q-badge>
+              <q-badge floating rounded color="positive">4</q-badge>
             </q-item>
             <q-item clickable :to="{ name: 'Help' }" v-if="!auth.isLoggedIn">
               <q-item-section avatar>
@@ -141,7 +141,7 @@
             <q-icon name="newspaper" color="positive" />
           </q-item-section>
           <q-item-section>Novidades</q-item-section>
-          <q-badge floating rounded color="positive">3</q-badge>
+          <q-badge floating rounded color="positive">4</q-badge>
         </q-item>
         <q-item clickable @click="logout">
           <q-item-section avatar>

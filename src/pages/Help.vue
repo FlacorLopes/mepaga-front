@@ -1,5 +1,8 @@
 <template>
-  <div class="q-pa-md" :style="`width: ${$q.screen.lt.md ? '100%' : '60%'}`">
+  <div
+    class="q-pa-md q-gutter-y-md"
+    :style="`width: ${$q.screen.lt.md ? '100%' : '60%'}`"
+  >
     <q-card>
       <q-card-section>
         <div class="text-h6 mp-ubuntu text-primary text-uppercase">
@@ -11,6 +14,20 @@
         <q-video
           :ratio="16 / 9"
           src="https://www.youtube.com/embed/2Pq-dAFFvwo"
+        />
+      </q-card-section>
+    </q-card>
+    <q-card>
+      <q-card-section>
+        <div class="text-h6 mp-ubuntu text-primary text-uppercase">
+          Como exportar a lista de compras da fatura por pessoa
+        </div>
+        <q-separator />
+      </q-card-section>
+      <q-card-section>
+        <q-video
+          :ratio="16 / 9"
+          src="https://www.youtube.com/embed/CDqBPKo7kBM"
         />
       </q-card-section>
     </q-card>
