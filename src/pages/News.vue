@@ -2,9 +2,33 @@
   <div class="q-px-lg q-pb-md mp-ubuntu">
     <q-timeline color="secondary">
       <q-timeline-entry heading>
-        <div class="text-h4">Novidades aqui no MePaga</div>
+        <div class="text-h5">Novidades aqui no MePaga</div>
       </q-timeline-entry>
 
+      <q-timeline-entry
+        title="Exportar lista de compras"
+        subtitle="19 de Março de 2022"
+        icon="paid"
+      >
+        <q-item clickable :to="{ name: 'Help' }">
+          <q-item-section avatar>
+            <q-icon name="paid" color="primary" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label
+              >Agora é possível exportar a lista de compras da fatura. Também é
+              possível selecionar apenas compradores específicos.</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+        <div class="row col">
+          <q-img
+            src="https://i.imgur.com/c23AgkN.png"
+            alt="como exportar a lista de compras"
+            class="col-8"
+          />
+        </div>
+      </q-timeline-entry>
       <q-timeline-entry
         title="Nova página de Ajuda"
         subtitle="15 de Março de 2022"
