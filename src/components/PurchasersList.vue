@@ -9,6 +9,18 @@
       </div>
     </q-card-section>
     <q-card-section class="q-gutter-y-md">
+      <div class="row justify-center">
+        <q-btn
+          push
+          dense
+          color="white"
+          text-color="primary"
+          icon="share"
+          label="Compartilhar compras"
+          class="col"
+          @click="$emit('showCharger')"
+        />
+      </div>
       <div>
         <div class="row q-gutter-sm-md q-gutter-xs-sm">
           <add-purchaser-card />
@@ -68,7 +80,7 @@ import AddPurchaserCard from 'src/components/AddPurchaserCard.vue';
 
 export default defineComponent({
   name: 'PurchasersList',
-  emits: ['purchaserClick', 'finishDivision', 'cancel'],
+  emits: ['purchaserClick', 'finishDivision', 'cancel', 'showCharger'],
   components: { PurchaserCard, AddPurchaserCard },
   props: {
     modalToTeleport: {

@@ -197,6 +197,7 @@
 import { ref, reactive, computed } from 'vue';
 import { useStore } from 'src/store';
 import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
 
 export default {
   setup() {
@@ -208,8 +209,11 @@ export default {
       password: '',
       confirmPassword: '',
     });
+    const $q = useQuasar();
     const auth = computed(() => store.state?.authentication);
-    const rightDrawerOpen = ref(!auth.value.isLoggedIn ? true : false);
+    const rightDrawerOpen = ref(
+      !auth.value.isLoggedIn && $q.screen.gt.xs ? true : false
+    );
     const showAbout = ref(false);
 
     router.beforeEach(() => {
