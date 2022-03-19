@@ -23,14 +23,17 @@
           </div>
         </q-card-section>
         <q-card-section>
-          <q-scroll-area style="height: 260px">
+          <q-scroll-area style="height: 260px" ref="scrollArea">
+            <!-- <div :style="`height: 65px;`"></div> -->
+
             <div
-              v-for="(p, index) in purchasesList"
+              v-for="(p, index) in reducedPurchasesList"
               :key="p.id"
+              id="row-element"
               class="q-mb-sm shadow-1 rounded-borders cursor-pointer"
-              :class="
+              :class="`${
                 index % 2 !== 0 ? 'bg-mp-lightblue-1' : 'bg-mp-lightblue-2'
-              "
+              }`"
               @click="handlePurchaseSelection(p.id)"
               :style="
                 isSelecting && selectedPurchaseId != p.id
@@ -112,6 +115,8 @@
                 </div>
               </div>
             </div>
+            <!-- <div :style="`height: 65px`"></div> -->
+            <q-scroll-observer @scroll="scrollHandler" />
           </q-scroll-area>
         </q-card-section>
         <q-card-section class="q-pt-none">
@@ -236,9 +241,9 @@
 <script lang="ts">
 import { useStore } from 'src/store';
 import { useRouter } from 'vue-router';
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, reactive } from 'vue';
 import LoadingTableSkeleton from 'src/components/LoadingTableSkeleton.vue';
-import { QDialog, useMeta, useQuasar } from 'quasar';
+import { QDialog, QScrollArea, useMeta, useQuasar } from 'quasar';
 
 import { getFullTextDate, getPurchaseOwner } from 'src/utils/InvoiceUtils';
 import { IPurchase, IPurchaser } from 'src/services/app/dto/InvoiceDTO';
@@ -281,7 +286,6 @@ const metaData = {
 export default defineComponent({
   components: {
     LoadingTableSkeleton,
-
     PurchasersList,
     PurchasesCharger,
   },
@@ -330,6 +334,42 @@ export default defineComponent({
     });
     const purchasersList = computed(() => store.state.invoices.purchasers);
 
+    const getDividedPrice = (purchase: IPurchase): number => {
+      // divides purchase value by all our purchasers
+      if (purchase.isShared)
+        return purchase.price / purchase.purchasers.data.length;
+      return purchase.price;
+    };
+
+    // const purchasers = computed(() => {
+    //   // unique set of purchaser along with it's purchases
+    //   const listSet = new Set([
+    //     ...[userPurchaser.value, ...purchasersList.value].map((p) => {
+    //       const purchases = [...purchasesList.value].filter((purchase) =>
+    //         purchase.attributes.purchasers.data
+    //           .map((innerPurchaser) => innerPurchaser.id)
+    //           .includes(p.id)
+    //       );
+
+    //       let total = 0.0;
+    //       if (purchases.length > 0) {
+    //         total = purchases
+    //           .map((p) => getDividedPrice(p.attributes))
+    //           .reduce((a, b) => a + b);
+    //       }
+    //       return {
+    //         id: p.id,
+    //         name: p.name,
+    //         representsUser: p.representsUser,
+    //         purchases,
+    //         total,
+    //       };
+    //     }),
+    //   ]);
+
+    //   return Array.from(listSet);
+    // });
+
     const dueDate = computed(() => {
       if (currentInvoice.value.dueDate) {
         return getFullTextDate(currentInvoice.value.dueDate);
@@ -376,13 +416,6 @@ export default defineComponent({
       }
     }
 
-    const getDividedPrice = (purchase: IPurchase): number => {
-      // divides purchase value by all our purchasers
-      if (purchase.isShared)
-        return purchase.price / purchase.purchasers.data.length;
-      return purchase.price;
-    };
-
     const setSecret = () => {
       authService.setSecretCookie(secret.value);
       window.location.reload();
@@ -393,12 +426,110 @@ export default defineComponent({
       purchases: userPurchases.value,
     }));
 
+    const scrollArea = ref<InstanceType<typeof QScrollArea>>();
+    const purchaseRowElementHeight = ref(0);
+
+    const DISPLAY_AMOUNT = 5;
+    const scroll = reactive({
+      top: 0,
+      start: 0,
+      end: 0 + DISPLAY_AMOUNT,
+    });
+
+    const reducedPurchasesList = computed(() => {
+      const sliced = purchasesList.value.slice(scroll.start, scroll.end);
+      console.log(sliced);
+      return sliced;
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const scrollHandler = (params: {
+      position: { top: number };
+      delta: { top: number };
+      direction: 'up' | 'down';
+      directionChanged: boolean;
+    }) => {
+      if (purchaseRowElementHeight.value === 0) {
+        purchaseRowElementHeight.value =
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          (document.querySelector('#row-element') as HTMLElement).offsetHeight;
+      }
+
+      let rowsToDisplay =
+        Math.floor(
+          scrollArea.value.getScroll().verticalContainerSize /
+            purchaseRowElementHeight.value
+        ) + 1;
+
+      // console.log(rowsToDisplay);
+
+      console.log(scrollArea.value.getScrollPercentage().top);
+
+      if (params.directionChanged) return;
+
+      if (
+        params.direction == 'down' &&
+        scrollArea.value.getScrollPercentage().top >= 0.65
+      ) {
+        if (scrollArea.value.getScrollPercentage().top >= 0.9) {
+          const timer = setInterval(() => {
+            console.log('timeDown');
+            if (scrollArea.value.getScrollPercentage().top >= 0.9) {
+              console.log('interval');
+              scrollArea.value.setScrollPercentage('vertical', 0.5);
+              clearInterval(timer);
+            }
+          }, 500);
+        }
+        if (scroll.end + rowsToDisplay < purchasesList.value.length) {
+          scroll.start = scroll.end - 2;
+          scroll.end = scroll.start + rowsToDisplay;
+          scrollArea.value.setScrollPercentage('vertical', 0.5);
+          console.log('+load', scroll);
+        } else {
+          let value = purchasesList.value.length - scroll.end;
+          scroll.start = scroll.end - rowsToDisplay;
+          scroll.end += value;
+
+          console.log('scrolling to the end', value, scroll);
+        }
+      } else if (
+        params.direction == 'up' &&
+        scrollArea.value.getScrollPercentage().top <= 0.65
+      ) {
+        if (scrollArea.value.getScrollPercentage().top <= 0.1) {
+          const timer = setInterval(() => {
+            console.log('timeDown');
+            if (scrollArea.value.getScrollPercentage().top <= 0.1) {
+              console.log('interval');
+              scrollArea.value.setScrollPercentage('vertical', 0.5);
+              clearInterval(timer);
+            }
+          }, 500);
+        }
+        if (scroll.start - rowsToDisplay > 0) {
+          scroll.end = scroll.end - 2;
+          scroll.start = scroll.end - rowsToDisplay;
+          scrollArea.value.setScrollPercentage('vertical', 0.5);
+          console.log('-load', scroll);
+        } else {
+          let value = 0 - scroll.start;
+          scroll.end = rowsToDisplay;
+
+          scroll.start += value;
+
+          console.log('scrolling to the beggining', value, scroll);
+        }
+      }
+    };
     return {
       secret,
       askSecret,
       currentInvoice,
       invoiceId,
       dueDate,
+      // purchasers,
+      reducedPurchasesList,
       purchasesList,
       userPurchases,
       userPurchasesValue,
@@ -413,6 +544,9 @@ export default defineComponent({
       showMobilePurchasers,
       showPurchasesCharger,
       authService,
+      scrollArea,
+      purchaseRowElementHeight,
+      scrollHandler,
       setSecret,
       getPurchaseOwner,
       getDividedPrice,

@@ -35,8 +35,9 @@ const actions: ActionTree<AppStateInterface, StateInterface> = {
     const purchasersFound: IPurchaser[] = [];
 
     // separates unique purchasers into purchasersFound
-    invoice.purchases.data.forEach((p) => {
+    invoice.purchases.data.forEach((p, index) => {
       p.attributes.date = date.formatDate(p.attributes.date, 'DD MM YYYY');
+      p.attributes.title = `${index}  -  ${p.attributes.title}`;
       p.attributes.purchasers.data.forEach((purchaser) => {
         if (
           !purchasersFound.some(
