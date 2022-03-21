@@ -10,10 +10,12 @@
         use-chips
         hide-bottom-space
         label="adicione uma pessoa"
+        type="text"
         v-model="newPurchaser"
         :options="userPurchasersList"
         :error="error"
         :error-message="errorMessage"
+        :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'"
         @new-value="addValueToSelect"
         @filter="filterFn"
         class="col"
