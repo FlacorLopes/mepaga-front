@@ -14,6 +14,7 @@
         :options="userPurchasersList"
         :error="error"
         :error-message="errorMessage"
+        :behavior="$q.platform.is.ios === true ? 'dialog' : 'menu'"
         @new-value="addValueToSelect"
         @filter="filterFn"
         class="col"
