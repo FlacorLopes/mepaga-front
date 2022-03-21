@@ -10,6 +10,7 @@
         use-chips
         hide-bottom-space
         label="adicione uma pessoa"
+        type="text"
         v-model="newPurchaser"
         :options="userPurchasersList"
         :error="error"
