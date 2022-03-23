@@ -1,5 +1,5 @@
 <template>
-  <q-card class="bg-mp-white-0 col mp-ubuntu">
+  <q-card class="bg-mp-white-0 col-12 mp-ubuntu">
     <q-card-section>
       <div class="row no-wrap items-center q-gutter-x-md">
         <q-icon name="shopping_bag" color="positive" size="md" />

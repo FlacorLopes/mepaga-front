@@ -23,6 +23,14 @@ export interface IPurchase {
   price: number;
   isShared: boolean;
   purchasers: StrapiCollectionResponseWrapper<IPurchaser>;
+  tags: StrapiCollectionResponseWrapper<ITag>;
+}
+
+export interface ITag {
+  id: number;
+  name: string;
+  owner: string;
+  purchases: IPurchase[];
 }
 
 export interface IPurchaser {

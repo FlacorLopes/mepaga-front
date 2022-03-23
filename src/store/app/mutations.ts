@@ -1,3 +1,4 @@
+import { ITag } from './../../services/app/dto/InvoiceDTO';
 import { IInvoice, IPurchaser } from 'src/services/app/dto/InvoiceDTO';
 import { MutationTree } from 'vuex';
 import { AppStateInterface } from './state';
@@ -19,6 +20,9 @@ const mutation: MutationTree<AppStateInterface> = {
   },
   setUserPurchasersList(state: AppStateInterface, list: IPurchaser[]) {
     state.userPurchaserList = list;
+  },
+  setUserTagsList(state: AppStateInterface, list: ITag[]) {
+    state.userTagList = list;
   },
 };
 

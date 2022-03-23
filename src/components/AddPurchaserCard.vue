@@ -51,7 +51,7 @@
         class="q-mb-xs-md"
         :loading="loading"
         :disable="
-          newPurchaser?.name?.length < 2 || newPurchaser?.name?.length > 10
+          newPurchaser?.name?.length < 3 || newPurchaser?.name?.length > 10
         "
         @click="addPurchaser"
         @blur="() => (error = false)"

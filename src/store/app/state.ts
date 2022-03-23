@@ -1,4 +1,4 @@
-import { IInvoice, IPurchaser } from 'src/services/app/dto/InvoiceDTO';
+import { IInvoice, IPurchaser, ITag } from 'src/services/app/dto/InvoiceDTO';
 
 export interface AppStateInterface {
   loading: boolean;
@@ -6,6 +6,7 @@ export interface AppStateInterface {
   currentInvoice?: IInvoice;
   purchasers?: Array<IPurchaser>;
   userPurchaserList?: Array<IPurchaser>;
+  userTagList: Array<ITag>;
 }
 
 function state(): AppStateInterface {
@@ -13,6 +14,7 @@ function state(): AppStateInterface {
     loading: false,
     purchasers: [],
     userPurchaserList: [],
+    userTagList: [],
   };
 }
 
