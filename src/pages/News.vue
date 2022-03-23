@@ -4,7 +4,34 @@
       <q-timeline-entry heading>
         <div class="text-h5">Novidades aqui no MePaga</div>
       </q-timeline-entry>
+      <q-timeline-entry
+        title="Controlar compras com tags 🏷️"
+        subtitle="22 de Março de 2022"
+        icon="sell"
+      >
+        <q-item clickable :to="{ name: 'Help' }">
+          <q-item-section avatar>
+            <q-icon name="paid" color="primary" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label
+              >Agora você pode controlar suas compras usando tags. Com isso é
+              possível filtrar gastos específicos, como Uber e Ifood.
+            </q-item-label>
+          </q-item-section>
+        </q-item>
 
+        <div class="row col">
+          <q-card class="col-sm-8 col-xs">
+            <q-card-section>
+              <q-video
+                :ratio="16 / 9"
+                src="https://www.youtube.com/embed/38lO0iyS-TQ"
+              />
+            </q-card-section>
+          </q-card>
+        </div>
+      </q-timeline-entry>
       <q-timeline-entry
         title="Exportar lista de compras"
         subtitle="19 de Março de 2022"

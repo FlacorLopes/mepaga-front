@@ -73,6 +73,7 @@
           size="sm"
           class="q-mb-xs-md col"
           :loading="loading"
+          :disable="newTagName.length < 3"
           @click="createTag"
         />
       </div>
