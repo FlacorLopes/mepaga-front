@@ -22,7 +22,7 @@
         </q-item>
 
         <div class="row col">
-          <q-card class="col-8">
+          <q-card class="col-sm-8 col-xs">
             <q-card-section>
               <q-video
                 :ratio="16 / 9"

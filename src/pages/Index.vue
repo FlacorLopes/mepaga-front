@@ -9,8 +9,9 @@
             style="max-width: 450px"
             :class="$q.screen.gt.xs ? 'text-body1' : 'text-body2'"
           >
-            O MePaga te ajuda ar organizar as faturas do seu cartão. Para
-            começar, importe uma fatura.
+            O MePaga te ajuda a organizar as faturas do seu cartão. Para
+            começar, importe uma fatura.<br />
+            <strong>É grátis! 🥰</strong>
           </div>
         </div>
 
@@ -22,11 +23,11 @@
             />
             <div>
               <div class="text-subtitle1 text-weight-medium text-primary">
-                Privacidade!
+                Privacidade
               </div>
               <div class="text-caption text-primary">
-                As Faturas que você envia têm a descrição criptografada com sua
-                Chave MePaga. Nós não temos acesso a elas.
+                As Faturas que você envia têm a descrição das compras
+                criptografada com sua Chave MePaga. Nós não temos acesso a elas.
               </div>
             </div>
           </div>
@@ -68,20 +69,42 @@
             <q-icon name="credit_card" color="primary" />
           </template>
         </q-select>
+        <div
+          v-if="selectedBank !== null"
+          class="row items-center q-gutter-x-md flex-center"
+        >
+          <q-icon name="cloud_upload" color="positive" size="md" />
+          <div class="text-caption">Voce pode arrastar a fatura aqui</div>
+        </div>
       </div>
 
-      <q-btn
+      <div
         v-if="!auth.isLoggedIn"
-        push
-        color="primary"
-        icon="img:images/google.svg"
-        label="Entrar com o google"
-        class="absolute-center"
-        style="z-index: 999"
-        :style="$q.screen.lt.sm ? 'width: 80%' : 'width: 40%'"
-        :loading="auth.loading"
-        :href="googleAuth"
-      />
+        :style="`z-index: 999; ${
+          $q.screen.lt.md ? 'width: 80%' : 'width: 40%'
+        }`"
+        class="column absolute-center q-gutter-y-md flex-center"
+      >
+        <q-btn
+          push
+          color="primary"
+          icon="img:images/google.svg"
+          label="Entrar com o google"
+          :loading="auth.loading"
+          :href="googleAuth"
+        />
+        <div>
+          <div class="column q-gutter-y-sm">
+            <div :class="$q.screen.lt.sm ? 'text-caption' : 'text-subtitle2'">
+              Faturas que suportamos atualmente
+            </div>
+            <div class="row q-gutter-x-md justify-center">
+              <q-img src="images/banks/nubank.png" alt="Nubank" width="60px" />
+              <q-img src="images/banks/picpay.png" alt="Picpay" width="60px" />
+            </div>
+          </div>
+        </div>
+      </div>
       <q-uploader
         :url="`${API_URL}api/invoices/upload?bank=${selectedBank?.toLocaleLowerCase()}`"
         color="positive"
@@ -174,7 +197,8 @@ const metaData = {
     },
     keywords: {
       name: 'keywords',
-      content: 'fatura,cartão,pdf,importar fatura,dividir compras,compras,',
+      content:
+        'fatura,cartão,pdf,importar fatura,dividir compras,compras,nubank,picpay',
     },
     equiv: {
       'http-equiv': 'Content-Type',
