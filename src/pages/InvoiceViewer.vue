@@ -22,7 +22,61 @@
             </div>
           </div>
         </q-card-section>
-        <q-card-section>
+        <q-card-section class="q-gutter-y-sm">
+          <div class="row justify-between q-py-none">
+            <q-btn-group push>
+              <q-btn
+                push
+                dense
+                label="Tags"
+                icon="sell"
+                color="white"
+                text-color="primary"
+                :disable="isSelecting || isDividing"
+                @click="displayTagManager = true"
+              >
+              </q-btn>
+            </q-btn-group>
+            <div class="col-sm-3 col-xs-6">
+              <q-select
+                outlined
+                dense
+                multiple
+                :max-values="3"
+                label="Filtrar por tags"
+                color="primary"
+                v-model="tagsForFilter"
+                :options="userTagList"
+                :disable="isSelecting || isDividing"
+              >
+                <template v-slot:selected-item="scope">
+                  <q-chip
+                    removable
+                    dense
+                    @remove="scope.removeAtIndex(scope.index)"
+                    :tabindex="scope.tabindex"
+                    icon="sell"
+                    color="mp-white-0"
+                    text-color="primary"
+                    class="q-ma-none"
+                  >
+                    {{ scope.opt.name }}
+                  </q-chip>
+                </template>
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-chip
+                      :label="scope.opt.name"
+                      dense
+                      icon="sell"
+                      color="mp-white-0"
+                      text-color="primary"
+                    />
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+          </div>
           <q-scroll-area style="height: 260px">
             <div
               v-for="(p, index) in purchasesList"
@@ -39,84 +93,143 @@
               "
             >
               <div class="column-xs row-sm q-px-lg q-py-sm no-wrap">
-                <div
-                  class="column q-gutter-x-md text-weight-regular text-mp-white-0"
-                >
-                  <q-chip
-                    color="mp-white-0"
+                <div class="row items-center">
+                  <q-checkbox
+                    v-if="isTagging"
+                    v-model="taggedPurchases"
+                    :val="p.id"
                     dense
-                    text-color="mp-red-0"
-                    style="width: 80px; max-width: 80px"
-                  >
-                    <div class="text-caption text-mp-blue-1">
-                      {{ p.attributes.date }}
-                    </div>
-                  </q-chip>
+                    size="sm"
+                  />
                   <div
-                    class="text-subtitle2 text-weight-medium text-lowercase text-mp-white-0 mp-purchase-line"
+                    class="column q-gutter-sm-x-md text-weight-regular text-mp-white-0"
                   >
-                    {{ p.attributes.title }}
+                    <q-chip
+                      color="mp-white-0"
+                      dense
+                      text-color="mp-red-0"
+                      style="width: 80px; max-width: 80px"
+                    >
+                      <div class="text-caption text-mp-blue-1">
+                        {{ p.attributes.date }}
+                      </div>
+                    </q-chip>
+                    <div
+                      class="text-subtitle2 text-weight-medium text-lowercase text-mp-white-0 mp-purchase-line"
+                    >
+                      {{ p.attributes.title }}
+                    </div>
                   </div>
                 </div>
                 <q-space />
-                <div class="row items-center q-gutter-x-sm q-mt-xs-md">
-                  <q-chip
-                    color="mp-white-0"
-                    dense
-                    text-color="mp-red-0"
-                    icon="paid"
-                    style="width: 90px; max-width: 90px"
-                  >
-                    R$ {{ formatCurrency(p.attributes.price) }}
-                  </q-chip>
+                <div class="column justify-end q-mt-xs-md">
+                  <div class="row q-gutter-x-xs">
+                    <q-chip
+                      v-for="tag in p.attributes.tags.data"
+                      :key="tag.id"
+                      :label="tag.attributes.name"
+                      dense
+                      removable
+                      clickable
+                      icon="sell"
+                      color="mp-white-0"
+                      text-color="primary"
+                      @remove="
+                        handleTagRemove(
+                          { id: tag.id, ...tag.attributes },
+                          {
+                            id: p.id,
+                            ...p.attributes,
+                          }
+                        )
+                      "
+                    />
+                  </div>
+                  <div class="row items-center q-gutter-x-sm">
+                    <q-chip
+                      color="mp-white-0"
+                      dense
+                      text-color="mp-red-0"
+                      icon="paid"
+                      style="width: 90px; max-width: 90px"
+                    >
+                      R$ {{ formatCurrency(p.attributes.price) }}
+                    </q-chip>
 
-                  <q-chip
-                    :color="p.attributes.isShared ? 'warning' : 'positive'"
-                    dense
-                    text-color="white"
-                    icon="account_circle"
-                    style="width: 120px; max-width: 120px"
-                  >
-                    <q-space />
-                    <div class="text-caption" v-if="p.attributes.isShared">
-                      DIVIDIDA
-                      <q-tooltip max-height="40px">{{
-                        p.attributes.purchasers.data
-                          .map((p) => p.attributes.name)
-                          .join(' - ')
-                      }}</q-tooltip>
-                    </div>
-                    <div class="text-caption" v-else>
-                      {{ getPurchaseOwner(p.attributes).name.toUpperCase() }}
-                    </div>
-                    <q-space />
-                  </q-chip>
-                  <q-icon
-                    name="more_horiz"
-                    color="mp-white-0"
-                    size="sm"
-                    class="cursor-pointer"
-                    v-ripple
-                  >
-                    <q-menu auto-close :class="{ 'z-max': $q.screen.lt.md }">
-                      <q-list style="min-width: 100px">
-                        <q-item clickable @click="isDividing = true">
-                          <q-item-section avatar>
-                            <q-icon name="safety_divider" color="primary" />
-                          </q-item-section>
-                          <q-item-section> Dividir Compra </q-item-section>
-                        </q-item>
-                      </q-list>
-                    </q-menu>
-                  </q-icon>
+                    <q-chip
+                      :color="p.attributes.isShared ? 'warning' : 'positive'"
+                      dense
+                      text-color="primary"
+                      icon="account_circle"
+                      style="width: 120px; max-width: 120px"
+                    >
+                      <q-space />
+                      <div class="text-caption" v-if="p.attributes.isShared">
+                        DIVIDIDA
+                        <q-tooltip max-height="40px">{{
+                          p.attributes.purchasers.data
+                            .map((p) => p.attributes.name)
+                            .join(' - ')
+                        }}</q-tooltip>
+                      </div>
+                      <div class="text-caption" v-else>
+                        {{ getPurchaseOwner(p.attributes).name.toUpperCase() }}
+                      </div>
+                      <q-space />
+                    </q-chip>
+                    <q-icon
+                      name="more_horiz"
+                      color="mp-white-0"
+                      size="sm"
+                      class="cursor-pointer"
+                      v-ripple
+                    >
+                      <q-menu auto-close :class="{ 'z-max': $q.screen.lt.md }">
+                        <q-list style="min-width: 100px">
+                          <q-item clickable @click="isDividing = true">
+                            <q-item-section avatar>
+                              <q-icon name="safety_divider" color="primary" />
+                            </q-item-section>
+                            <q-item-section> Dividir Compra </q-item-section>
+                          </q-item>
+                        </q-list>
+                      </q-menu>
+                    </q-icon>
+                  </div>
                 </div>
               </div>
             </div>
           </q-scroll-area>
         </q-card-section>
-        <q-card-section class="q-pt-none">
+        <q-card-section class="q-pt-none row">
+          <div class="column col" v-if="isTagging">
+            <div class="row col q-gutter-x-xs">
+              <q-chip
+                v-for="tag in tagsToBeAdded"
+                :key="tag.id"
+                :label="tag.name"
+                dense
+                color="primary"
+                text-color="mp-white-0"
+              />
+            </div>
+            <q-btn
+              id="taggingActionButton"
+              icon="sell"
+              :label="
+                taggedPurchases.length > 0
+                  ? 'Finalizar Adição de Tags'
+                  : 'Cancelar Adição de Tags'
+              "
+              color="positive"
+              text-color="primary"
+              class="col"
+              @click="finishTagging"
+            />
+          </div>
           <div
-            class="row bg-mp-white-2 shadow-1 rounded-borders q-pa-lg items-center"
+            v-else
+            class="row bg-mp-white-2 shadow-1 rounded-borders q-pa-lg items-center col"
           >
             <div class="row q-gutter-x-md">
               <div class="text-h5 text-mp-lightblue-0">TOTAL</div>
@@ -230,24 +343,35 @@
         :getDividedPrice="getDividedPrice"
       />
     </q-dialog>
+    <q-dialog v-model="displayTagManager">
+      <tag-manager @finishTagsSelection="handleTaggin" />
+    </q-dialog>
   </div>
 </template>
 
 <script lang="ts">
 import { useStore } from 'src/store';
 import { useRouter } from 'vue-router';
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, nextTick } from 'vue';
 import LoadingTableSkeleton from 'src/components/LoadingTableSkeleton.vue';
-import { QDialog, useMeta, useQuasar } from 'quasar';
-
+import { QDialog, useMeta, useQuasar, scroll } from 'quasar';
 import { getFullTextDate, getPurchaseOwner } from 'src/utils/InvoiceUtils';
-import { IPurchase, IPurchaser } from 'src/services/app/dto/InvoiceDTO';
+import { IPurchase, IPurchaser, ITag } from 'src/services/app/dto/InvoiceDTO';
 import { formatCurrency } from '@brazilian-utils/brazilian-utils';
 import PurchasersList from 'src/components/PurchasersList.vue';
 import { AuthService } from 'src/services/auth/AuthService';
 import PurchasesCharger from 'src/components/PurchasesCharger.vue';
+import TagManager from 'src/components/TagManager.vue';
 
 const authService = new AuthService();
+const { getScrollTarget, setVerticalScrollPosition } = scroll;
+
+// takes an element object
+function scrollToElement(el: HTMLElement, duration = 500) {
+  const target = getScrollTarget(el);
+  const offset = el.offsetTop + el.offsetHeight;
+  setVerticalScrollPosition(target, offset, duration);
+}
 
 const metaData = {
   title: 'Controle sua Fatura',
@@ -281,7 +405,7 @@ const metaData = {
 export default defineComponent({
   components: {
     LoadingTableSkeleton,
-
+    TagManager,
     PurchasersList,
     PurchasesCharger,
   },
@@ -296,16 +420,31 @@ export default defineComponent({
     const secret = ref($q.cookies.get('mepaga_secret'));
     const askSecret = ref(false);
 
-    const invoiceId = computed(() => router.currentRoute.value.params.id);
-    const currentInvoice = computed(() => store.state.invoices?.currentInvoice);
-    const purchasesList = computed(() => currentInvoice.value?.purchases.data);
-
     const loading = ref(true);
     const isSelecting = ref(false);
     const isDividing = ref(false);
     const dividingPurchasers = ref<IPurchaser[]>([]);
 
+    const isTagging = ref(false);
+    const tagsToBeAdded = ref<ITag[]>([]);
+    const taggedPurchases = ref<number[]>([]);
+    const displayTagManager = ref(false);
+    const userTagList = computed(() => store.state.invoices.userTagList);
+    const tagsForFilter = ref<ITag[]>([]);
+
     const selectedPurchaseId = ref();
+    const invoiceId = computed(() => router.currentRoute.value.params.id);
+    const currentInvoice = computed(() => store.state.invoices?.currentInvoice);
+    const purchasesList = computed(() => {
+      if (tagsForFilter.value.length === 0)
+        return currentInvoice.value?.purchases.data;
+
+      return currentInvoice.value?.purchases.data.filter((purchase) =>
+        purchase.attributes.tags.data.some((tag) =>
+          tagsForFilter.value.some((filterTag) => filterTag.id === tag.id)
+        )
+      );
+    });
 
     const userPurchaser = computed(() =>
       store.state.invoices?.userPurchaserList?.find(
@@ -410,6 +549,12 @@ export default defineComponent({
       selectedPurchaseId,
       isDividing,
       dividingPurchasers,
+      isTagging,
+      tagsToBeAdded,
+      tagsForFilter,
+      userTagList,
+      displayTagManager,
+      taggedPurchases,
       showMobilePurchasers,
       showPurchasesCharger,
       authService,
@@ -420,7 +565,23 @@ export default defineComponent({
     };
   },
   methods: {
+    handleTagCheckboxToggle(id: number) {
+      if (this.taggedPurchases.includes(id)) {
+        const index = this.taggedPurchases.findIndex(
+          (purchaseId) => id === purchaseId
+        );
+        this.taggedPurchases.splice(index, 1);
+
+        return;
+      }
+
+      this.taggedPurchases.push(id);
+    },
     handlePurchaseSelection(purchaseId: number) {
+      if (this.isTagging) {
+        this.handleTagCheckboxToggle(purchaseId);
+        return;
+      }
       if (this.isSelecting && purchaseId == this.selectedPurchaseId) return;
       if (!this.isSelecting) {
         this.isDividing = false;
@@ -432,6 +593,58 @@ export default defineComponent({
         this.dividingPurchasers = [];
         this.selectedPurchaseId = null;
         this.isSelecting = false;
+      }
+    },
+
+    async handleTaggin(tags: ITag[]) {
+      this.isTagging = true;
+      this.tagsToBeAdded = tags;
+
+      // necessary to get the element by id
+      await nextTick();
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      const taggingActionButton = document.querySelector(
+        '#taggingActionButton'
+      ) as HTMLElement;
+      scrollToElement(taggingActionButton, 100);
+    },
+
+    async finishTagging() {
+      try {
+        this.isTagging = false;
+
+        if (this.taggedPurchases.length === 0) return;
+
+        this.$q.loading.show({
+          spinnerColor: 'positive',
+        });
+        await Promise.all(
+          this.taggedPurchases.map((purchaseId) => {
+            return this.$store.dispatch('invoices/addTagsToPurchase', {
+              tags: this.tagsToBeAdded,
+              purchaseId,
+            });
+          })
+        );
+
+        this.taggedPurchases = [];
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.$q.loading.hide();
+      }
+    },
+
+    async handleTagRemove(tag: ITag, purchase: IPurchase) {
+      const tagToRemoveIndex = purchase.tags.data.findIndex(
+        (t) => t.id === tag.id
+      );
+
+      if (tagToRemoveIndex != -1) {
+        await this.$store.dispatch('invoices/addTagsToPurchase', {
+          tags: [...purchase.tags.data.filter((t) => t.id !== tag.id)],
+          purchaseId: purchase.id,
+        });
       }
     },
 
@@ -452,7 +665,9 @@ export default defineComponent({
       }
     },
     async handlePurchaserClick(purchaser: IPurchaser) {
-      if (!this.isSelecting) return;
+      if (!this.isSelecting) {
+        return;
+      }
 
       if (this.isDividing) {
         // if is performing purchase division, then just adds the purhcaser
