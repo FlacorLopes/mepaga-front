@@ -31,6 +31,20 @@
         />
       </q-card-section>
     </q-card>
+    <q-card>
+      <q-card-section>
+        <div class="text-h6 mp-ubuntu text-primary text-uppercase">
+          🏷️ Como filtrar suas compras com tags 🏷️
+        </div>
+        <q-separator />
+      </q-card-section>
+      <q-card-section>
+        <q-video
+          :ratio="16 / 9"
+          src="https://www.youtube.com/embed/38lO0iyS-TQ"
+        />
+      </q-card-section>
+    </q-card>
   </div>
 </template>
 <script lang="ts">
