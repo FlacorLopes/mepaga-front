@@ -78,7 +78,22 @@
             </div>
           </div>
           <q-scroll-area style="height: 260px">
-            <div
+            <purchase-row
+              v-for="(p, index) in purchasesList"
+              :key="p.id"
+              class="q-mb-sm shadow-1 rounded-borders cursor-pointer"
+              :class="
+                index % 2 !== 0 ? 'bg-mp-lightblue-1' : 'bg-mp-lightblue-2'
+              "
+              :purchaseId="p.id"
+              :date="p.attributes.date"
+              :title="p.attributes.title"
+              :price="formatCurrency(p.attributes.price)"
+              :isShared="p.attributes.isShared"
+              :isDividing="isDividing"
+              :purchasers="p.attributes.purchasers.data"
+            />
+            <!-- <div
               v-for="(p, index) in purchasesList"
               :key="p.id"
               class="q-mb-sm shadow-1 rounded-borders cursor-pointer"
@@ -198,7 +213,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
           </q-scroll-area>
         </q-card-section>
         <q-card-section class="q-pt-none row">
@@ -362,6 +377,7 @@ import PurchasersList from 'src/components/PurchasersList.vue';
 import { AuthService } from 'src/services/auth/AuthService';
 import PurchasesCharger from 'src/components/PurchasesCharger.vue';
 import TagManager from 'src/components/TagManager.vue';
+import PurchaseRow from 'src/components/PurchaseRow/PurchaseRow.vue';
 
 const authService = new AuthService();
 const { getScrollTarget, setVerticalScrollPosition } = scroll;
@@ -408,6 +424,7 @@ export default defineComponent({
     TagManager,
     PurchasersList,
     PurchasesCharger,
+    PurchaseRow,
   },
   name: 'InvoiceViewer',
   setup() {
