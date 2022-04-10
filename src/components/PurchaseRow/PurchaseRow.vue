@@ -1,8 +1,20 @@
 <template>
-  <div class="q-mb-sm shadow-1 rounded-borders cursor-pointer">
+  <div
+    class="q-mb-sm shadow-1 rounded-borders cursor-pointer"
+    data-test="container"
+    :style="blured && !isCurrentlySelected ? 'filter: blur(2px);' : ''"
+  >
     <div class="column-xs row-sm q-px-lg q-py-sm no-wrap">
       <div class="row items-center">
-        <q-checkbox v-model="temp" v-if="true" dense size="sm" />
+        <q-checkbox
+          v-model="selectedForTagging"
+          :val="isTagged ? purchaseId : false"
+          v-if="displayTaggingCheckbox"
+          dense
+          size="sm"
+          @update:model-value="$emit('tagCheckboxToggle', purchaseId)"
+          data-test="tag.checkbox"
+        />
         <div
           class="column q-gutter-sm-x-md text-weight-regular text-mp-white-0"
         >
@@ -26,28 +38,20 @@
       </div>
       <q-space />
       <div class="column justify-end q-mt-xs-md">
-        <!-- <div class="row q-gutter-x-xs">
-                    <q-chip
-                      v-for="tag in p.attributes.tags.data"
-                      :key="tag.id"
-                      :label="tag.attributes.name"
-                      dense
-                      removable
-                      clickable
-                      icon="sell"
-                      color="mp-white-0"
-                      text-color="primary"
-                      @remove="
-                        handleTagRemove(
-                          { id: tag.id, ...tag.attributes },
-                          {
-                            id: p.id,
-                            ...p.attributes,
-                          }
-                        )
-                      "
-                    />
-                  </div> -->
+        <div class="row q-gutter-x-xs" data-test="tag.container">
+          <q-chip
+            v-for="tag in tags.data.slice(0, 3)"
+            :key="tag.id"
+            :label="tag.attributes.name"
+            dense
+            removable
+            clickable
+            icon="sell"
+            color="mp-white-0"
+            text-color="primary"
+            data-test="tag"
+          />
+        </div>
         <div class="row items-center q-gutter-x-sm">
           <q-chip
             color="mp-white-0"
@@ -69,11 +73,11 @@
             <div class="text-caption" v-if="isShared" data-test="shared">
               DIVIDIDA
               <q-tooltip max-height="40px" data-test="shared.names">{{
-                purchasers.map((p) => p.name).join(' - ')
+                purchasers.data.map((p) => p.attributes.name).join(' - ')
               }}</q-tooltip>
             </div>
             <div class="text-caption" v-else data-test="purchaser.name">
-              {{ purchaser.name.toUpperCase() }}
+              {{ purchaser.attributes.name.toUpperCase() }}
             </div>
             <q-space />
           </q-chip>

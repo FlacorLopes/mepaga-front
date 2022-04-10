@@ -1,4 +1,7 @@
-import { ResponseObject } from './../../../src/services/StrapiResponseWrapper';
+import {
+  ResponseObject,
+  StrapiSingleResponseWrapper,
+} from 'src/services/StrapiResponseWrapper';
 import { StrapiCollectionResponseWrapper } from 'src/services/StrapiResponseWrapper';
 import { IPurchase, IPurchaser, ITag } from 'src/services/app/dto/InvoiceDTO';
 import { mount, VueWrapper } from '@vue/test-utils';
@@ -11,9 +14,13 @@ import { faker } from '@faker-js/faker';
 installQuasarPlugin();
 
 const makePurchaseRow = (params?: {
-  purchasers: StrapiCollectionResponseWrapper<IPurchaser>;
+  purchasers?: StrapiCollectionResponseWrapper<IPurchaser>;
   isShared?: boolean;
   tags?: StrapiCollectionResponseWrapper<ITag>;
+  isCurrentlySelected?: boolean;
+  blured?: boolean;
+  displayTaggingCheckbox?: boolean;
+  isTagged?: boolean;
 }): {
   purchase: IPurchase;
   wrapper: VueWrapper<ComponentPublicInstance>;
@@ -24,8 +31,12 @@ const makePurchaseRow = (params?: {
     title: 'Descrição da compra',
     price: 234.49,
     isShared: params?.isShared ?? false,
-    purchasers: params?.purchasers ?? null,
-    tags: params?.tags ?? null,
+    purchasers: {
+      data: params?.purchasers?.data || [makePurchaser(true)],
+    },
+    tags: {
+      data: params?.tags?.data || [],
+    },
   };
 
   const wrapper = mount(PurchaseRow, {
@@ -35,13 +46,33 @@ const makePurchaseRow = (params?: {
       title: purchase.title,
       price: `R$ ${formatCurrency(purchase.price)}`,
       isShared: purchase.isShared,
-      purchasers: params?.purchasers?.data.map((p) => p.attributes) || [
-        makePurchaser(true).attributes,
-      ],
+      purchasers: purchase.purchasers,
+      tags: purchase.tags,
+      isCurrentlySelected: params?.isCurrentlySelected,
+      blured: params?.blured,
+      displayTaggingCheckbox: params?.displayTaggingCheckbox,
+      isTagged: params?.isTagged,
     },
   });
 
   return { purchase, wrapper };
+};
+
+const makeTag = (params?: ITag): StrapiSingleResponseWrapper<ITag> => {
+  const purchaser = makePurchaser(true);
+
+  const generatedTag: ITag = {
+    id: params?.id ?? faker.datatype.number(),
+    name: params?.name ?? faker.random.word().slice(0, 12),
+    owner: params?.owner ?? String(purchaser.id),
+    purchases: params?.purchases ?? [],
+  };
+  return {
+    data: {
+      id: generatedTag.id,
+      attributes: generatedTag,
+    },
+  };
 };
 
 const makePurchaser = (representsUser = false): ResponseObject<IPurchaser> => {
@@ -127,5 +158,77 @@ describe('PurchaseRow', () => {
     });
 
     expect(wrapper.find("[data-test='divide.icon']").exists()).toBe(true);
+  });
+
+  it('should has blur filter when marked as blured and is not currently selected', () => {
+    const { wrapper } = makePurchaseRow({
+      blured: true,
+      isCurrentlySelected: false,
+    });
+
+    expect(
+      wrapper.find("[data-test='container']").attributes('style')
+    ).toContain('filter: blur(2px)');
+  });
+
+  describe('tags', () => {
+    it('should display a checkbox when displayTaggingCheckbox is true', () => {
+      const { wrapper } = makePurchaseRow({ displayTaggingCheckbox: true });
+
+      expect(wrapper.find("[data-test='tag.checkbox']").exists()).toBe(true);
+    });
+
+    it('should NOT display a checkbox when displayTaggingCheckbox is false', () => {
+      const { wrapper } = makePurchaseRow({ displayTaggingCheckbox: false });
+
+      expect(wrapper.find("[data-test='tag.checkbox']").exists()).toBe(false);
+    });
+
+    it('should have a checkbox checked when isTagged is true', () => {
+      const { wrapper, purchase } = makePurchaseRow({
+        displayTaggingCheckbox: true,
+        isTagged: true,
+      });
+
+      expect(
+        wrapper.findComponent("[data-test='tag.checkbox']").props().val
+      ).toBe(purchase.id);
+    });
+
+    it('should have a checkbox UNCHECKED when isTagged is false', () => {
+      const { wrapper, purchase } = makePurchaseRow({
+        displayTaggingCheckbox: true,
+        isTagged: false,
+      });
+
+      expect(
+        wrapper.findComponent("[data-test='tag.checkbox']").props().val
+      ).not.toBe(purchase.id);
+    });
+
+    it('should display as many tags as present in tag list', () => {
+      const { wrapper } = makePurchaseRow({
+        tags: {
+          data: [makeTag().data, makeTag().data],
+        },
+      });
+
+      expect(wrapper.findAll("[data-test='tag']").length).toBe(2);
+    });
+
+    it('should display no more than 3 tags', () => {
+      const { wrapper } = makePurchaseRow({
+        tags: {
+          data: [
+            makeTag().data,
+            makeTag().data,
+            makeTag().data,
+            makeTag().data,
+          ],
+        },
+      });
+
+      expect(wrapper.findAll("[data-test='tag']").length).toBe(3);
+    });
   });
 });

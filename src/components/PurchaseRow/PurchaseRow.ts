@@ -1,6 +1,7 @@
+import { StrapiCollectionResponseWrapper } from 'src/services/StrapiResponseWrapper';
 import { getPurchaseOwner } from 'src/utils/InvoiceUtils';
-import { IPurchaser } from './../../services/app/dto/InvoiceDTO';
-import { defineComponent, ref, PropType, computed } from 'vue';
+import { IPurchaser, ITag } from 'src/services/app/dto/InvoiceDTO';
+import { defineComponent, ref, PropType, computed, watch } from 'vue';
 
 export default defineComponent({
   name: 'PurchaseRow',
@@ -26,24 +27,50 @@ export default defineComponent({
       default: false,
     },
     purchasers: {
-      type: Array as PropType<IPurchaser[]>,
+      type: Object as PropType<StrapiCollectionResponseWrapper<IPurchaser>>,
       required: true,
     },
     isDividing: {
       type: Boolean,
       default: false,
     },
+    blured: {
+      type: Boolean,
+      default: false,
+    },
+    isCurrentlySelected: {
+      type: Boolean,
+      default: false,
+    },
+    displayTaggingCheckbox: {
+      type: Boolean,
+      default: false,
+    },
+    isTagged: {
+      type: Boolean,
+      default: false,
+    },
+    tags: {
+      type: Object as PropType<StrapiCollectionResponseWrapper<ITag>>,
+      required: true,
+    },
   },
-  emits: ['dividePurchaseClick'],
+  emits: ['dividePurchaseClick', 'tagCheckboxToggle'],
   setup(props) {
     const purchaser = computed(() => {
       if (!props.isShared) {
-        return props.purchasers.find((p) => p.representsUser);
+        return props.purchasers.data.find((p) => p.attributes.representsUser);
       }
-      return props.purchasers[0];
+      return props.purchasers.data[0];
+    });
+    const selectedForTagging = ref([]);
+
+    watch(props, () => {
+      if (props.isTagged) selectedForTagging.value[0] = props.purchaseId;
+      else selectedForTagging.value[0] = undefined;
     });
     return {
-      temp: ref(false),
+      selectedForTagging,
       getPurchaseOwner,
       purchaser,
     };

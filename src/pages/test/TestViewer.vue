@@ -1,15 +1,15 @@
 <template>
-  <purchase-row />
+  <q-checkbox v-model="model" :val="1" label="teste" />
 </template>
 <script lang="ts">
-import PurchaseRow from 'src/components/PurchaseRow/PurchaseRow.vue';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-  components: { PurchaseRow },
   name: 'TestViewer',
   setup() {
-    //
+    return {
+      model: ref([1]),
+    };
   },
 });
 </script>
