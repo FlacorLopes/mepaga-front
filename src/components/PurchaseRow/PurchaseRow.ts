@@ -55,13 +55,13 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['dividePurchaseClick', 'tagCheckboxToggle'],
+  emits: ['dividePurchaseClick', 'tagCheckboxToggle', 'tagRemove'],
   setup(props) {
     const purchaser = computed(() => {
       if (!props.isShared) {
         return props.purchasers.data.find((p) => p.attributes.representsUser);
       }
-      return props.purchasers.data[0];
+      return null;
     });
     const selectedForTagging = ref([]);
 

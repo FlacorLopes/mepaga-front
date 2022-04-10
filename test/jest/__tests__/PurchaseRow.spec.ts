@@ -5,7 +5,7 @@ import {
 import { StrapiCollectionResponseWrapper } from 'src/services/StrapiResponseWrapper';
 import { IPurchase, IPurchaser, ITag } from 'src/services/app/dto/InvoiceDTO';
 import { mount, VueWrapper } from '@vue/test-utils';
-import { ComponentPublicInstance } from 'vue';
+import { ComponentPublicInstance, nextTick } from 'vue';
 import { describe, expect, it } from '@jest/globals';
 import { installQuasarPlugin } from '@quasar/quasar-app-extension-testing-unit-jest';
 import PurchaseRow from 'src/components/PurchaseRow/PurchaseRow';
@@ -230,5 +230,7 @@ describe('PurchaseRow', () => {
 
       expect(wrapper.findAll("[data-test='tag']").length).toBe(3);
     });
+
+    it.todo('should remove a tag when remove icon is clicked');
   });
 });

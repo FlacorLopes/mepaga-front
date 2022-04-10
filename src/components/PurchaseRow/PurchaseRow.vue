@@ -50,6 +50,7 @@
             color="mp-white-0"
             text-color="primary"
             data-test="tag"
+            @remove="$emit('tagRemove', tag)"
           />
         </div>
         <div class="row items-center q-gutter-x-sm">
